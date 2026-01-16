@@ -330,6 +330,7 @@
                     <button onclick="filterTag('new')" id="tag-new" class="tag-btn bg-blue-50 text-blue-600">✨ 新品</button>
                     <button onclick="filterTag('featured')" id="tag-featured" class="tag-btn bg-amber-50 text-amber-600">⭐ 精选</button>
                     <button onclick="filterTag('highrated')" id="tag-highrated" class="tag-btn bg-purple-50 text-purple-600">💎 高评分</button>
+                    <button onclick="filterTag('favorites')" id="tag-favorites" class="tag-btn bg-pink-50 text-pink-600">❤️ 收藏</button>
                 </div>
             </div>
 
@@ -392,6 +393,7 @@
         let sortBy = 'default';  // 排序方式
         let myRatings = {};
         let viewedVersions = {};  // 已查看的插件版本 {pluginId: version}
+        let favorites = [];  // 收藏列表
         
         // 分类图标
         const icons = {
@@ -504,6 +506,44 @@
             setTimeout(() => toast.remove(), 2000);
         }
         
+        // ========== 收藏功能 ==========
+        function loadFavorites() {
+            try {
+                const saved = localStorage.getItem('plugin_favorites_view');
+                if (saved) favorites = JSON.parse(saved);
+            } catch (e) { favorites = []; }
+        }
+        
+        function saveFavorites() {
+            try {
+                localStorage.setItem('plugin_favorites_view', JSON.stringify(favorites));
+            } catch (e) {}
+        }
+        
+        function isFavorite(pluginId) {
+            return favorites.includes(pluginId);
+        }
+        
+        function toggleFavorite(pluginId, event) {
+            if (event) event.stopPropagation();
+            if (!pluginId) return;
+            
+            if (isFavorite(pluginId)) {
+                favorites = favorites.filter(id => id !== pluginId);
+                showToast('已取消收藏');
+            } else {
+                favorites.push(pluginId);
+                showToast('❤️ 已收藏');
+            }
+            saveFavorites();
+            render();
+            renderFeatured();
+        }
+        
+        function getFavoritesCount() {
+            return favorites.length;
+        }
+        
         // ========== 排序功能 ==========
         function sortChange(value) {
             sortBy = value;
@@ -553,6 +593,7 @@
                 case 'new': return isNewForUser(plugin);  // 用户未查看过此版本
                 case 'featured': return plugin.featured === true;
                 case 'highrated': return (plugin.rating || 5) >= 4.5;
+                case 'favorites': return isFavorite(plugin.id);
                 default: return true;
             }
         }
@@ -581,6 +622,7 @@
         async function init() {
             loadMyRatings();
             loadViewedVersions();
+            loadFavorites();
             try {
                 let data;
                 try {
@@ -683,9 +725,13 @@
             const isNew = isNewForUser(p);  // 用户未查看过此版本
             const isHot = (p.downloads || 0) >= 100;
             
-            return `<div onclick="showDetail('${p.id}')" class="plugin-card cursor-pointer ${featured ? 'featured-card' : ''}">
+            return `<div onclick="showDetail('${p.id}')" class="plugin-card cursor-pointer ${featured ? 'featured-card' : ''}" style="position:relative">
                 ${isNew ? '<span class="new-badge">NEW</span>' : ''}
-                <div class="flex items-start gap-3 mb-2">
+                <button onclick="event.stopPropagation(); toggleFavorite('${p.id}', event)" 
+                        class="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all ${isFavorite(p.id) ? 'bg-pink-100 text-pink-500' : 'bg-gray-100 text-gray-400 hover:bg-pink-50'}">
+                    ${isFavorite(p.id) ? '❤️' : '🤍'}
+                </button>
+                <div class="flex items-start gap-3 mb-2 pr-8">
                     <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center text-lg">${icon}</div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-1 flex-wrap">
