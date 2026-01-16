@@ -23,13 +23,11 @@
             background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f472b6 100%);
         }
         
-        /* 主容器 */
         .main-container {
             height: calc(100vh - 70px);
             display: flex;
         }
         
-        /* 左侧分类 - 独立滚动 */
         .sidebar {
             background: white;
             border-radius: 20px;
@@ -37,27 +35,16 @@
             overflow-y: auto;
             height: 100%;
         }
-        .sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .sidebar::-webkit-scrollbar-thumb {
-            background: #e9d5ff;
-            border-radius: 4px;
-        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #e9d5ff; border-radius: 4px; }
         
-        /* 右侧内容 - 独立滚动 */
         .content-area {
             overflow-y: auto;
             height: 100%;
             padding-right: 8px;
         }
-        .content-area::-webkit-scrollbar {
-            width: 6px;
-        }
-        .content-area::-webkit-scrollbar-thumb {
-            background: #d8b4fe;
-            border-radius: 6px;
-        }
+        .content-area::-webkit-scrollbar { width: 6px; }
+        .content-area::-webkit-scrollbar-thumb { background: #d8b4fe; border-radius: 6px; }
         
         .cat-grid {
             display: grid;
@@ -91,17 +78,12 @@
             border-radius: 8px;
             white-space: nowrap;
         }
-        .cat-item:hover {
-            background: #faf5ff;
-            color: #7c3aed;
-        }
+        .cat-item:hover { background: #faf5ff; color: #7c3aed; }
         .cat-item.active {
             background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
             color: white;
         }
-        .cat-item.full-width {
-            grid-column: span 2;
-        }
+        .cat-item.full-width { grid-column: span 2; }
         
         .search-input {
             width: 100%;
@@ -126,6 +108,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid rgba(168, 85, 247, 0.1);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
         }
         .plugin-card:hover {
             transform: translateY(-4px);
@@ -153,9 +136,56 @@
             box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
         }
         
-        .notice-bar {
-            background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
-            border-left: 4px solid #f59e0b;
+        .tag-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .tag-btn:hover { transform: scale(1.05); }
+        .tag-btn.active { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        
+        .new-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .screenshot-item {
+            aspect-ratio: 16/10;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+        .screenshot-item:hover {
+            border-color: #a855f7;
+            transform: scale(1.02);
+        }
+        .screenshot-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -183,6 +213,11 @@
                         <span class="font-bold" id="stat-featured">-</span>
                         <span class="text-sm text-white/70">精选</span>
                     </div>
+                    <div class="stat-card flex items-center gap-2">
+                        <span>⬇️</span>
+                        <span class="font-bold" id="stat-downloads">-</span>
+                        <span class="text-sm text-white/70">下载</span>
+                    </div>
                 </div>
                 
                 <div class="flex items-center gap-2">
@@ -200,9 +235,9 @@
         </div>
     </div>
 
-    <!-- 主体：左右独立滚动 -->
+    <!-- 主体 -->
     <div class="main-container px-6 py-4 gap-6">
-        <!-- 左侧分类 - 独立滚动 -->
+        <!-- 左侧分类 -->
         <div class="w-72 flex-shrink-0">
             <div class="sidebar p-4">
                 <div class="font-bold text-gray-800 mb-3 flex items-center gap-2 sticky top-0 bg-white pb-2 z-10">
@@ -215,77 +250,78 @@
                     </div>
                     
                     <div class="cat-group-title">🎯 核心功能</div>
-                    <div class="cat-item" data-cat="娱乐" onclick="filterCat('娱乐')"><span>🎮</span>娱乐</div>
                     <div class="cat-item" data-cat="娱乐游戏" onclick="filterCat('娱乐游戏')"><span>🎮</span>娱乐游戏</div>
-                    <div class="cat-item" data-cat="实用" onclick="filterCat('实用')"><span>🛠️</span>实用</div>
                     <div class="cat-item" data-cat="实用工具" onclick="filterCat('实用工具')"><span>🛠️</span>实用工具</div>
-                    <div class="cat-item" data-cat="社交" onclick="filterCat('社交')"><span>💬</span>社交</div>
                     <div class="cat-item" data-cat="社交互动" onclick="filterCat('社交互动')"><span>💬</span>社交互动</div>
-                    <div class="cat-item" data-cat="AI" onclick="filterCat('AI')"><span>🤖</span>AI</div>
                     <div class="cat-item" data-cat="AI增强" onclick="filterCat('AI增强')"><span>🤖</span>AI增强</div>
                     
                     <div class="cat-group-title">📺 媒体内容</div>
-                    <div class="cat-item" data-cat="音乐" onclick="filterCat('音乐')"><span>🎵</span>音乐</div>
-                    <div class="cat-item" data-cat="图片" onclick="filterCat('图片')"><span>🖼️</span>图片</div>
-                    <div class="cat-item" data-cat="视频" onclick="filterCat('视频')"><span>📹</span>视频</div>
-                    <div class="cat-item" data-cat="媒体" onclick="filterCat('媒体')"><span>📺</span>媒体</div>
+                    <div class="cat-item" data-cat="音乐音频" onclick="filterCat('音乐音频')"><span>🎵</span>音乐音频</div>
+                    <div class="cat-item" data-cat="图片处理" onclick="filterCat('图片处理')"><span>🖼️</span>图片处理</div>
+                    <div class="cat-item" data-cat="视频相关" onclick="filterCat('视频相关')"><span>📹</span>视频相关</div>
+                    <div class="cat-item" data-cat="媒体综合" onclick="filterCat('媒体综合')"><span>📺</span>媒体综合</div>
                     
                     <div class="cat-group-title">📰 信息资讯</div>
-                    <div class="cat-item" data-cat="新闻" onclick="filterCat('新闻')"><span>📰</span>新闻</div>
-                    <div class="cat-item" data-cat="天气" onclick="filterCat('天气')"><span>🌤️</span>天气</div>
+                    <div class="cat-item" data-cat="新闻资讯" onclick="filterCat('新闻资讯')"><span>📰</span>新闻资讯</div>
                     <div class="cat-item" data-cat="天气日历" onclick="filterCat('天气日历')"><span>🌤️</span>天气日历</div>
-                    <div class="cat-item" data-cat="搜索" onclick="filterCat('搜索')"><span>🔍</span>搜索</div>
-                    <div class="cat-item" data-cat="翻译" onclick="filterCat('翻译')"><span>🌐</span>翻译</div>
+                    <div class="cat-item" data-cat="网络搜索" onclick="filterCat('网络搜索')"><span>🔍</span>网络搜索</div>
                     <div class="cat-item" data-cat="翻译语言" onclick="filterCat('翻译语言')"><span>🌐</span>翻译语言</div>
                     
-                    <div class="cat-group-title">⚡ 效率 / 🎲 趣味</div>
+                    <div class="cat-group-title">⚡ 效率提升</div>
                     <div class="cat-item" data-cat="自动化" onclick="filterCat('自动化')"><span>⚡</span>自动化</div>
-                    <div class="cat-item" data-cat="提醒" onclick="filterCat('提醒')"><span>⏰</span>提醒</div>
-                    <div class="cat-item" data-cat="数据" onclick="filterCat('数据')"><span>📊</span>数据</div>
-                    <div class="cat-item" data-cat="开发" onclick="filterCat('开发')"><span>💻</span>开发</div>
-                    <div class="cat-item" data-cat="占卜" onclick="filterCat('占卜')"><span>🔮</span>占卜</div>
-                    <div class="cat-item" data-cat="恶搞" onclick="filterCat('恶搞')"><span>🃏</span>恶搞</div>
-                    <div class="cat-item" data-cat="角色" onclick="filterCat('角色')"><span>🎭</span>角色</div>
-                    <div class="cat-item" data-cat="抽奖" onclick="filterCat('抽奖')"><span>🎰</span>抽奖</div>
+                    <div class="cat-item" data-cat="提醒备忘" onclick="filterCat('提醒备忘')"><span>⏰</span>提醒备忘</div>
+                    <div class="cat-item" data-cat="数据处理" onclick="filterCat('数据处理')"><span>📊</span>数据处理</div>
+                    <div class="cat-item" data-cat="开发工具" onclick="filterCat('开发工具')"><span>💻</span>开发工具</div>
                     
-                    <div class="cat-group-title">🏠 生活 / 👥 群组</div>
-                    <div class="cat-item" data-cat="生活" onclick="filterCat('生活')"><span>🏠</span>生活</div>
-                    <div class="cat-item" data-cat="学习" onclick="filterCat('学习')"><span>📚</span>学习</div>
-                    <div class="cat-item" data-cat="财务" onclick="filterCat('财务')"><span>💰</span>财务</div>
-                    <div class="cat-item" data-cat="健康" onclick="filterCat('健康')"><span>💪</span>健康</div>
-                    <div class="cat-item" data-cat="群管" onclick="filterCat('群管')"><span>👮</span>群管</div>
-                    <div class="cat-item" data-cat="统计" onclick="filterCat('统计')"><span>📈</span>统计</div>
-                    <div class="cat-item" data-cat="互动" onclick="filterCat('互动')"><span>🎉</span>互动</div>
+                    <div class="cat-group-title">🎲 趣味休闲</div>
+                    <div class="cat-item" data-cat="占卜算命" onclick="filterCat('占卜算命')"><span>🔮</span>占卜算命</div>
+                    <div class="cat-item" data-cat="趣味恶搞" onclick="filterCat('趣味恶搞')"><span>🃏</span>趣味恶搞</div>
+                    <div class="cat-item" data-cat="角色扮演" onclick="filterCat('角色扮演')"><span>🎭</span>角色扮演</div>
+                    <div class="cat-item" data-cat="抽奖随机" onclick="filterCat('抽奖随机')"><span>🎰</span>抽奖随机</div>
+                    
+                    <div class="cat-group-title">🏠 生活服务</div>
+                    <div class="cat-item" data-cat="生活服务" onclick="filterCat('生活服务')"><span>🏠</span>生活服务</div>
+                    <div class="cat-item" data-cat="学习教育" onclick="filterCat('学习教育')"><span>📚</span>学习教育</div>
+                    <div class="cat-item" data-cat="财务金融" onclick="filterCat('财务金融')"><span>💰</span>财务金融</div>
+                    <div class="cat-item" data-cat="健康运动" onclick="filterCat('健康运动')"><span>💪</span>健康运动</div>
+                    
+                    <div class="cat-group-title">👥 群组管理</div>
+                    <div class="cat-item" data-cat="群管理" onclick="filterCat('群管理')"><span>👮</span>群管理</div>
+                    <div class="cat-item" data-cat="数据统计" onclick="filterCat('数据统计')"><span>📈</span>数据统计</div>
+                    <div class="cat-item" data-cat="群互动" onclick="filterCat('群互动')"><span>🎉</span>群互动</div>
                     
                     <div class="cat-group-title">🔧 其他</div>
-                    <div class="cat-item" data-cat="系统" onclick="filterCat('系统')"><span>⚙️</span>系统</div>
-                    <div class="cat-item" data-cat="表情" onclick="filterCat('表情')"><span>😊</span>表情</div>
-                    <div class="cat-item" data-cat="计算" onclick="filterCat('计算')"><span>🧮</span>计算</div>
+                    <div class="cat-item" data-cat="系统管理" onclick="filterCat('系统管理')"><span>⚙️</span>系统管理</div>
                     <div class="cat-item" data-cat="其他" onclick="filterCat('其他')"><span>📦</span>其他</div>
                 </div>
             </div>
         </div>
         
-        <!-- 右侧内容 - 独立滚动 -->
+        <!-- 右侧内容 -->
         <div class="flex-1 min-w-0 content-area">
-            <!-- 提示条 -->
-            <div class="notice-bar rounded-lg px-4 py-2 mb-4 flex items-center gap-2 text-sm">
-                <span class="text-amber-600">💡</span>
-                <span class="text-amber-800">此页面仅供浏览，如需安装请点击「本地市场」</span>
-            </div>
-            
             <!-- 搜索框 -->
-            <div class="bg-white rounded-2xl p-4 mb-5 shadow-sm">
+            <div class="bg-white rounded-2xl p-4 mb-4 shadow-sm">
                 <div class="relative">
                     <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
-                    <input type="text" id="searchInput" placeholder="✨ 搜索插件名称、描述、功能..." class="search-input">
+                    <input type="text" id="searchInput" placeholder="✨ 搜索插件名称、描述、作者..." class="search-input">
+                </div>
+                
+                <!-- 标签筛选 -->
+                <div class="flex items-center gap-2 mt-3 flex-wrap">
+                    <span class="text-xs text-gray-400 mr-1">快速筛选:</span>
+                    <button onclick="filterTag('all')" id="tag-all" class="tag-btn bg-gray-100 text-gray-600 active">全部</button>
+                    <button onclick="filterTag('free')" id="tag-free" class="tag-btn bg-green-50 text-green-600">🆓 免费</button>
+                    <button onclick="filterTag('hot')" id="tag-hot" class="tag-btn bg-red-50 text-red-600">🔥 热门</button>
+                    <button onclick="filterTag('new')" id="tag-new" class="tag-btn bg-blue-50 text-blue-600">✨ 新品</button>
+                    <button onclick="filterTag('featured')" id="tag-featured" class="tag-btn bg-amber-50 text-amber-600">⭐ 精选</button>
+                    <button onclick="filterTag('highrated')" id="tag-highrated" class="tag-btn bg-purple-50 text-purple-600">💎 高评分</button>
                 </div>
             </div>
 
             <!-- 精选 -->
-            <div id="featuredArea" class="mb-6 hidden">
+            <div id="featuredArea" class="mb-5 hidden">
                 <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">⭐ 精选推荐</h2>
                 <div id="featuredList" class="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4"></div>
             </div>
@@ -304,24 +340,31 @@
                 </div>
             </div>
             
-            <!-- 底部留白 -->
             <div class="h-4"></div>
         </div>
     </div>
 
-    <!-- 弹窗 -->
+    <!-- 插件详情弹窗 -->
     <div id="modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden" onclick="if(event.target===this)closeModal()">
-        <div class="bg-white rounded-2xl w-full max-w-xl max-h-[80vh] overflow-hidden shadow-2xl">
+        <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-2xl">
             <div id="modalHeader" class="p-5 bg-gradient-to-r from-purple-50 to-pink-50 border-b"></div>
-            <div id="modalBody" class="p-5 overflow-y-auto" style="max-height: calc(80vh - 160px);"></div>
+            <div id="modalBody" class="p-5 overflow-y-auto" style="max-height: calc(85vh - 180px);"></div>
             <div class="p-4 border-t bg-gray-50 flex items-center justify-between">
-                <a id="modalGithub" href="#" target="_blank" class="text-purple-600 hover:text-purple-800 text-sm flex items-center gap-1">📂 源代码</a>
+                <a id="modalGithub" href="#" target="_blank" class="text-purple-600 hover:text-purple-800 text-sm flex items-center gap-1">📂 查看源代码</a>
                 <div class="flex gap-2">
                     <button onclick="closeModal()" class="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-100 text-sm">关闭</button>
-                    <button onclick="installPlugin()" class="btn-primary px-4 py-2 rounded-lg text-white text-sm">🔗 安装</button>
+                    <button onclick="installPlugin()" class="btn-primary px-4 py-2 rounded-lg text-white text-sm">🔗 前往安装</button>
                 </div>
             </div>
         </div>
+    </div>
+    
+    <!-- 截图放大弹窗 -->
+    <div id="screenshotModal" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[60] p-4 hidden" onclick="closeScreenshot()">
+        <img id="screenshotImg" src="" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl" onclick="event.stopPropagation()">
+        <button onclick="closeScreenshot()" class="absolute top-4 right-4 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:bg-gray-100">
+            ✕
+        </button>
     </div>
 
     <script>
@@ -332,98 +375,124 @@
         let plugins = [];
         let currentPlugin = null;
         let currentCat = '';
-        let myRatings = {};  // 用户评分
-        let hoverRating = 0;  // 悬停评分
+        let currentTag = 'all';
+        let myRatings = {};
         
-        // 加载用户评分
+        // 分类图标
+        const icons = {
+            '娱乐游戏': '🎮', '实用工具': '🛠️', '社交互动': '💬', 'AI增强': '🤖',
+            '音乐音频': '🎵', '图片处理': '🖼️', '视频相关': '📹', '媒体综合': '📺',
+            '新闻资讯': '📰', '天气日历': '🌤️', '网络搜索': '🔍', '翻译语言': '🌐',
+            '自动化': '⚡', '提醒备忘': '⏰', '数据处理': '📊', '开发工具': '💻',
+            '占卜算命': '🔮', '趣味恶搞': '🃏', '角色扮演': '🎭', '抽奖随机': '🎰',
+            '生活服务': '🏠', '学习教育': '📚', '财务金融': '💰', '健康运动': '💪',
+            '群管理': '👮', '数据统计': '📈', '群互动': '🎉', '系统管理': '⚙️', '其他': '📦'
+        };
+        
+        // ========== 评分系统 ==========
         function loadMyRatings() {
             try {
-                const saved = localStorage.getItem('plugin_my_ratings');
+                const saved = localStorage.getItem('plugin_my_ratings_view');
                 if (saved) myRatings = JSON.parse(saved);
             } catch (e) { myRatings = {}; }
         }
         
-        // 保存用户评分
         function saveMyRatings() {
             try {
-                localStorage.setItem('plugin_my_ratings', JSON.stringify(myRatings));
+                localStorage.setItem('plugin_my_ratings_view', JSON.stringify(myRatings));
             } catch (e) {}
         }
         
-        // 获取用户评分
         function getMyRating(pluginId) {
             return myRatings[pluginId] || 0;
         }
         
-        // 评分
-        function ratePlugin(pluginId, rating) {
+        function ratePlugin(pluginId, rating, event) {
+            if (event) event.stopPropagation();
             if (!pluginId) return;
+            
             if (myRatings[pluginId] === rating) {
                 delete myRatings[pluginId];
-                alert('已取消评分');
+                showToast('已取消评分');
             } else {
                 myRatings[pluginId] = rating;
-                alert('已评分 ' + rating + ' 星 ⭐');
+                showToast('已评分 ' + rating + ' 星 ⭐');
             }
             saveMyRatings();
-            if (currentPlugin) showDetail(currentPlugin.id);  // 刷新详情
+            if (currentPlugin) showDetail(currentPlugin.id);
         }
         
-        // 生成星星HTML
         function renderStars(rating, interactive, pluginId) {
             let html = '';
             const filled = Math.round(rating || 5);
             for (let i = 1; i <= 5; i++) {
                 if (interactive) {
-                    html += '<button onclick="ratePlugin(\'' + pluginId + '\',' + i + ')" ' +
-                            'onmouseenter="highlightStars(this,' + i + ')" ' +
-                            'onmouseleave="resetStars(this)" ' +
-                            'class="text-lg transition-transform hover:scale-125 focus:outline-none ' +
-                            (i <= filled ? 'text-amber-400' : 'text-gray-300') + '" data-star="' + i + '">★</button>';
+                    const myR = getMyRating(pluginId);
+                    const isActive = myR ? i <= myR : i <= filled;
+                    html += `<button onclick="ratePlugin('${pluginId}',${i},event)" 
+                            class="text-lg transition-transform hover:scale-125 focus:outline-none ${isActive ? 'text-amber-400' : 'text-gray-300'}">★</button>`;
                 } else {
-                    html += '<span class="text-sm ' + (i <= filled ? 'text-amber-400' : 'text-gray-300') + '">★</span>';
+                    html += `<span class="text-sm ${i <= filled ? 'text-amber-400' : 'text-gray-300'}">★</span>`;
                 }
             }
             return html;
         }
         
-        function highlightStars(btn, rating) {
-            const parent = btn.parentElement;
-            parent.querySelectorAll('button').forEach((b, i) => {
-                b.className = b.className.replace(/text-(amber-400|gray-300)/g, '');
-                b.classList.add(i < rating ? 'text-amber-400' : 'text-gray-300');
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-[100] text-sm';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+        
+        // ========== 标签筛选 ==========
+        function filterTag(tag) {
+            currentTag = tag;
+            document.querySelectorAll('.tag-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.id === 'tag-' + tag);
+                btn.classList.toggle('ring-2', btn.id === 'tag-' + tag);
+                btn.classList.toggle('ring-offset-1', btn.id === 'tag-' + tag);
             });
+            render();
         }
         
-        function resetStars(btn) {
-            if (currentPlugin) showDetail(currentPlugin.id);
+        function matchTag(plugin, tag) {
+            switch (tag) {
+                case 'all': return true;
+                case 'free': return !plugin.price || plugin.price === 0;
+                case 'hot': return (plugin.downloads || 0) >= 100;
+                case 'new': return plugin.version === '1.0.0';
+                case 'featured': return plugin.featured === true;
+                case 'highrated': return (plugin.rating || 5) >= 4.5;
+                default: return true;
+            }
         }
         
-        const icons = {
-            '娱乐': '🎮', '娱乐游戏': '🎮', '实用': '🛠️', '实用工具': '🛠️',
-            '社交': '💬', '社交互动': '💬', 'AI': '🤖', 'AI增强': '🤖',
-            '音乐': '🎵', '图片': '🖼️', '视频': '📹', '媒体': '📺',
-            '新闻': '📰', '天气': '🌤️', '天气日历': '🌤️', '搜索': '🔍',
-            '翻译': '🌐', '翻译语言': '🌐', '自动化': '⚡', '提醒': '⏰',
-            '数据': '📊', '开发': '💻', '占卜': '🔮', '恶搞': '🃏',
-            '角色': '🎭', '抽奖': '🎰', '生活': '🏠', '学习': '📚',
-            '财务': '💰', '健康': '💪', '群管': '👮', '统计': '📈',
-            '互动': '🎉', '系统': '⚙️', '表情': '😊', '计算': '🧮', '其他': '📦'
-        };
-        
+        // ========== 分类筛选 ==========
         function filterCat(cat) {
             currentCat = cat;
             document.querySelectorAll('.cat-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.cat === cat);
             });
-            document.getElementById('catTitle').textContent = cat ? (icons[cat] + ' ' + cat) : '所有插件';
+            document.getElementById('catTitle').textContent = cat ? (icons[cat] || '📦') + ' ' + cat : '所有插件';
             render();
         }
         
+        // ========== 截图功能 ==========
+        function showScreenshot(url) {
+            document.getElementById('screenshotImg').src = url;
+            document.getElementById('screenshotModal').classList.remove('hidden');
+        }
+        
+        function closeScreenshot() {
+            document.getElementById('screenshotModal').classList.add('hidden');
+        }
+        
+        // ========== 初始化 ==========
         async function init() {
-            loadMyRatings();  // 加载用户评分
+            loadMyRatings();
             try {
-                // 优先使用API代理（5000次/小时），失败则回退到GitHub Raw（60次/小时）
                 let data;
                 try {
                     const apiRes = await fetch('/api/plugins');
@@ -445,8 +514,11 @@
                     plugins = data.plugins || [];
                 }
                 
+                // 统计
+                const totalDownloads = plugins.reduce((sum, p) => sum + (p.downloads || 0), 0);
                 document.getElementById('stat-total').textContent = plugins.length;
                 document.getElementById('stat-featured').textContent = plugins.filter(p => p.featured).length;
+                document.getElementById('stat-downloads').textContent = totalDownloads >= 1000 ? (totalDownloads / 1000).toFixed(1) + 'k' : totalDownloads;
                 
                 render();
                 renderFeatured();
@@ -462,7 +534,10 @@
             const featured = plugins.filter(p => p.featured);
             const area = document.getElementById('featuredArea');
             const list = document.getElementById('featuredList');
-            if (featured.length === 0) { area.classList.add('hidden'); return; }
+            if (featured.length === 0 || currentCat || currentTag !== 'all') { 
+                area.classList.add('hidden'); 
+                return; 
+            }
             area.classList.remove('hidden');
             list.innerHTML = featured.map(p => makeCard(p, true)).join('');
         }
@@ -471,18 +546,35 @@
             const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
             let list = plugins;
             
+            // 搜索
             if (search) {
                 list = list.filter(p => 
                     (p.cn_name || '').toLowerCase().includes(search) ||
                     (p.name || '').toLowerCase().includes(search) ||
-                    (p.description || '').toLowerCase().includes(search)
+                    (p.description || '').toLowerCase().includes(search) ||
+                    (p.author || '').toLowerCase().includes(search)
                 );
             }
+            
+            // 分类
             if (currentCat) {
                 list = list.filter(p => p.category === currentCat);
             }
             
+            // 标签
+            if (currentTag !== 'all') {
+                list = list.filter(p => matchTag(p, currentTag));
+            }
+            
             document.getElementById('countText').textContent = '(' + list.length + '个)';
+            
+            // 隐藏/显示精选
+            const featuredArea = document.getElementById('featuredArea');
+            if (search || currentCat || currentTag !== 'all') {
+                featuredArea.classList.add('hidden');
+            } else {
+                renderFeatured();
+            }
             
             const container = document.getElementById('pluginList');
             if (list.length === 0) {
@@ -496,23 +588,33 @@
         
         function makeCard(p, featured) {
             const icon = icons[p.category] || '📦';
-            return '<div onclick="showDetail(\'' + p.id + '\')" class="plugin-card cursor-pointer ' + (featured ? 'featured-card' : '') + '">' +
-                '<div class="flex items-start gap-3 mb-2">' +
-                '<div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center text-lg">' + icon + '</div>' +
-                '<div class="flex-1 min-w-0">' +
-                '<div class="flex items-center gap-1">' +
-                '<h3 class="font-bold text-gray-800 truncate text-sm">' + (p.cn_name || p.name) + '</h3>' +
-                (p.featured ? '<span class="bg-amber-400 text-white text-xs px-1 rounded">精选</span>' : '') +
-                '</div>' +
-                '<p class="text-xs text-gray-400">v' + p.version + ' · ' + p.author + '</p>' +
-                '</div></div>' +
-                '<p class="text-gray-600 text-xs mb-2 line-clamp-2">' + p.description + '</p>' +
-                '<div class="flex items-center justify-between">' +
-                '<span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 text-xs">' + p.category + '</span>' +
-                '<span class="flex items-center gap-1 text-xs text-gray-400">' +
-                '<span class="text-amber-400">★</span>' + (p.rating || 5).toFixed(1) +
-                '</span>' +
-                '</div></div>';
+            const isNew = p.version === '1.0.0';
+            const isHot = (p.downloads || 0) >= 100;
+            
+            return `<div onclick="showDetail('${p.id}')" class="plugin-card cursor-pointer ${featured ? 'featured-card' : ''}">
+                ${isNew ? '<span class="new-badge">NEW</span>' : ''}
+                <div class="flex items-start gap-3 mb-2">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center text-lg">${icon}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1 flex-wrap">
+                            <h3 class="font-bold text-gray-800 truncate text-sm">${p.cn_name || p.name}</h3>
+                            ${p.featured ? '<span class="bg-amber-400 text-white text-xs px-1 rounded">精选</span>' : ''}
+                            ${isHot ? '<span class="bg-red-400 text-white text-xs px-1 rounded">热门</span>' : ''}
+                        </div>
+                        <p class="text-xs text-gray-400">v${p.version} · ${p.author}</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-xs mb-2 line-clamp-2">${p.description}</p>
+                <div class="flex items-center justify-between">
+                    <span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 text-xs">${p.category}</span>
+                    <div class="flex items-center gap-2 text-xs text-gray-400">
+                        <span>⬇️${p.downloads || 0}</span>
+                        <span class="flex items-center gap-0.5">
+                            <span class="text-amber-400">★</span>${(p.rating || 5).toFixed(1)}
+                        </span>
+                    </div>
+                </div>
+            </div>`;
         }
         
         function showDetail(id) {
@@ -520,50 +622,136 @@
             if (!currentPlugin) return;
             
             const icon = icons[currentPlugin.category] || '📦';
-            document.getElementById('modalHeader').innerHTML = 
-                '<div class="flex items-center gap-3">' +
-                '<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center text-2xl">' + icon + '</div>' +
-                '<div>' +
-                '<h2 class="text-lg font-bold text-gray-800">' + (currentPlugin.cn_name || currentPlugin.name) + '</h2>' +
-                '<p class="text-gray-500 text-sm">v' + currentPlugin.version + ' · ' + currentPlugin.author + '</p>' +
-                '</div></div>';
+            const isNew = currentPlugin.version === '1.0.0';
+            const isHot = (currentPlugin.downloads || 0) >= 100;
             
-            let html = '<div class="space-y-3">';
+            // 头部
+            let headerHtml = `
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center text-3xl">${icon}</div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h2 class="text-xl font-bold text-gray-800">${currentPlugin.cn_name || currentPlugin.name}</h2>
+                            ${currentPlugin.featured ? '<span class="bg-amber-400 text-white text-xs px-2 py-0.5 rounded-full">⭐ 精选</span>' : ''}
+                            ${isNew ? '<span class="bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full">✨ 新品</span>' : ''}
+                            ${isHot ? '<span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">🔥 热门</span>' : ''}
+                        </div>
+                        <p class="text-gray-500 text-sm mt-1">
+                            <span>📦 v${currentPlugin.version}</span>
+                            <span class="mx-2">·</span>
+                            <span>👤 ${currentPlugin.author}</span>
+                            <span class="mx-2">·</span>
+                            <span>⬇️ ${currentPlugin.downloads || 0}次下载</span>
+                        </p>
+                    </div>
+                </div>`;
+            document.getElementById('modalHeader').innerHTML = headerHtml;
+            
+            // 内容
+            let bodyHtml = '<div class="space-y-4">';
             
             // 评分区域
             const myRating = getMyRating(currentPlugin.id);
-            html += '<div class="bg-purple-50 p-3 rounded-lg">' +
-                '<div class="flex items-center justify-between">' +
-                '<div class="flex items-center gap-2">' +
-                '<span class="text-sm text-gray-600">社区评分:</span>' +
-                renderStars(currentPlugin.rating || 5, false, currentPlugin.id) +
-                '<span class="text-sm font-bold text-amber-600">' + (currentPlugin.rating || 5).toFixed(1) + '</span>' +
-                '</div>' +
-                '<div class="flex items-center gap-2">' +
-                '<span class="text-sm text-gray-600">我的评分:</span>' +
-                '<span id="my-stars">' + renderStars(myRating, true, currentPlugin.id) + '</span>' +
-                (myRating ? '<span class="text-xs text-gray-400">(' + myRating + '分)</span>' : '<span class="text-xs text-gray-400">点击评分</span>') +
-                '</div>' +
-                '</div></div>';
+            bodyHtml += `
+                <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm text-gray-600">社区评分:</span>
+                            <div class="flex items-center gap-1">
+                                ${renderStars(currentPlugin.rating || 5, false, currentPlugin.id)}
+                                <span class="text-sm font-bold text-amber-600 ml-1">${(currentPlugin.rating || 5).toFixed(1)}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm text-gray-600">我的评分:</span>
+                            <div class="flex items-center gap-1">
+                                ${renderStars(myRating || currentPlugin.rating || 5, true, currentPlugin.id)}
+                                ${myRating ? `<span class="text-xs text-gray-400 ml-1">(${myRating}分)</span>` : '<span class="text-xs text-gray-400 ml-1">点击评分</span>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
             
-            html += '<div><h3 class="font-bold text-gray-700 mb-1 text-sm">📝 介绍</h3>' +
-                '<p class="text-gray-600 bg-gray-50 p-3 rounded-lg text-sm">' + (currentPlugin.full_description || currentPlugin.description) + '</p></div>';
+            // 截图
+            if (currentPlugin.screenshots?.length > 0) {
+                bodyHtml += `
+                    <div>
+                        <h3 class="font-bold text-gray-700 mb-2 text-sm flex items-center gap-2">
+                            📸 效果截图 <span class="text-xs text-gray-400 font-normal">点击放大</span>
+                        </h3>
+                        <div class="screenshot-grid">
+                            ${currentPlugin.screenshots.map(s => `
+                                <div class="screenshot-item" onclick="event.stopPropagation(); showScreenshot('${s}')">
+                                    <img src="${s}" alt="截图" onerror="this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full bg-gray-100 text-gray-400 text-xs\\'>加载失败</div>'">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>`;
+            }
             
+            // 介绍
+            bodyHtml += `
+                <div>
+                    <h3 class="font-bold text-gray-700 mb-2 text-sm">📝 插件介绍</h3>
+                    <p class="text-gray-600 bg-gray-50 p-3 rounded-lg text-sm leading-relaxed">${currentPlugin.full_description || currentPlugin.description}</p>
+                </div>`;
+            
+            // 功能特色
             if (currentPlugin.features?.length) {
-                html += '<div><h3 class="font-bold text-gray-700 mb-1 text-sm">✨ 特色</h3><ul class="text-sm space-y-1">' +
-                    currentPlugin.features.map(f => '<li class="flex items-center gap-1 text-gray-600"><span class="text-green-500">✓</span>' + f + '</li>').join('') +
-                    '</ul></div>';
+                bodyHtml += `
+                    <div>
+                        <h3 class="font-bold text-gray-700 mb-2 text-sm">✨ 功能特色</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            ${currentPlugin.features.map(f => `
+                                <div class="flex items-center gap-2 text-gray-600 bg-green-50 px-3 py-2 rounded-lg text-sm">
+                                    <span class="text-green-500">✓</span>
+                                    <span>${f}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>`;
             }
             
+            // 命令
             if (currentPlugin.commands?.length) {
-                html += '<div><h3 class="font-bold text-gray-700 mb-1 text-sm">⌨️ 命令</h3>' +
-                    '<div class="flex flex-wrap gap-1">' +
-                    currentPlugin.commands.map(c => '<code class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded text-xs">' + c + '</code>').join('') +
-                    '</div></div>';
+                bodyHtml += `
+                    <div>
+                        <h3 class="font-bold text-gray-700 mb-2 text-sm">⌨️ 触发命令</h3>
+                        <div class="flex flex-wrap gap-2">
+                            ${currentPlugin.commands.map(c => `<code class="bg-purple-50 text-purple-600 px-3 py-1 rounded-lg text-sm">${c}</code>`).join('')}
+                        </div>
+                    </div>`;
             }
             
-            html += '</div>';
-            document.getElementById('modalBody').innerHTML = html;
+            // 使用说明
+            if (currentPlugin.usage) {
+                bodyHtml += `
+                    <div>
+                        <h3 class="font-bold text-gray-700 mb-2 text-sm">💡 使用说明</h3>
+                        <p class="text-gray-600 bg-blue-50 p-3 rounded-lg text-sm">${currentPlugin.usage}</p>
+                    </div>`;
+            }
+            
+            // 更新日志
+            if (currentPlugin.changelog) {
+                bodyHtml += `
+                    <div>
+                        <h3 class="font-bold text-gray-700 mb-2 text-sm">📋 更新日志</h3>
+                        <p class="text-gray-600 bg-gray-50 p-3 rounded-lg text-sm">${currentPlugin.changelog}</p>
+                    </div>`;
+            }
+            
+            // 注意事项
+            if (currentPlugin.notes) {
+                bodyHtml += `
+                    <div>
+                        <h3 class="font-bold text-gray-700 mb-2 text-sm">⚠️ 注意事项</h3>
+                        <p class="text-gray-600 bg-amber-50 p-3 rounded-lg text-sm">${currentPlugin.notes}</p>
+                    </div>`;
+            }
+            
+            bodyHtml += '</div>';
+            document.getElementById('modalBody').innerHTML = bodyHtml;
             document.getElementById('modalGithub').href = GITHUB_REPO + currentPlugin.id;
             document.getElementById('modal').classList.remove('hidden');
         }
@@ -580,6 +768,14 @@
         function goLocal() {
             window.open(LOCAL_URL + '/plugins/market', '_blank');
         }
+        
+        // 键盘事件
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeScreenshot();
+            }
+        });
         
         document.getElementById('searchInput')?.addEventListener('input', render);
         
