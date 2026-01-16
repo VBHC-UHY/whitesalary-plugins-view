@@ -377,6 +377,7 @@
         let currentCat = '';
         let currentTag = 'all';
         let myRatings = {};
+        let viewedVersions = {};  // 已查看的插件版本 {pluginId: version}
         
         // 分类图标
         const icons = {
@@ -388,6 +389,49 @@
             '生活服务': '🏠', '学习教育': '📚', '财务金融': '💰', '健康运动': '💪',
             '群管理': '👮', '数据统计': '📈', '群互动': '🎉', '系统管理': '⚙️', '其他': '📦'
         };
+        
+        // ========== 已查看版本管理 ==========
+        function loadViewedVersions() {
+            try {
+                const saved = localStorage.getItem('plugin_viewed_versions');
+                if (saved) viewedVersions = JSON.parse(saved);
+            } catch (e) { viewedVersions = {}; }
+        }
+        
+        function saveViewedVersions() {
+            try {
+                localStorage.setItem('plugin_viewed_versions', JSON.stringify(viewedVersions));
+            } catch (e) {}
+        }
+        
+        // 标记插件为已查看（记录当前版本）
+        function markAsViewed(pluginId, version) {
+            viewedVersions[pluginId] = version;
+            saveViewedVersions();
+        }
+        
+        // 检查插件是否有"新"内容（版本比已查看的新）
+        function isNewForUser(plugin) {
+            if (!plugin) return false;
+            const viewedVer = viewedVersions[plugin.id];
+            // 如果从未查看过，就是新的
+            if (!viewedVer) return true;
+            // 如果当前版本比已查看版本新，就是新的
+            return compareVersions(plugin.version, viewedVer) > 0;
+        }
+        
+        // 比较版本号
+        function compareVersions(v1, v2) {
+            if (!v1 || !v2) return 0;
+            const p1 = v1.split('.').map(n => parseInt(n) || 0);
+            const p2 = v2.split('.').map(n => parseInt(n) || 0);
+            for (let i = 0; i < Math.max(p1.length, p2.length); i++) {
+                const a = p1[i] || 0, b = p2[i] || 0;
+                if (a > b) return 1;
+                if (a < b) return -1;
+            }
+            return 0;
+        }
         
         // ========== 评分系统 ==========
         function loadMyRatings() {
@@ -462,7 +506,7 @@
                 case 'all': return true;
                 case 'free': return !plugin.price || plugin.price === 0;
                 case 'hot': return (plugin.downloads || 0) >= 100;
-                case 'new': return plugin.isNew === true || (plugin.tags && plugin.tags.includes('new'));
+                case 'new': return isNewForUser(plugin);  // 用户未查看过此版本
                 case 'featured': return plugin.featured === true;
                 case 'highrated': return (plugin.rating || 5) >= 4.5;
                 default: return true;
@@ -492,6 +536,7 @@
         // ========== 初始化 ==========
         async function init() {
             loadMyRatings();
+            loadViewedVersions();
             try {
                 let data;
                 try {
@@ -588,7 +633,7 @@
         
         function makeCard(p, featured) {
             const icon = icons[p.category] || '📦';
-            const isNew = p.isNew === true || (p.tags && p.tags.includes('new'));
+            const isNew = isNewForUser(p);  // 用户未查看过此版本
             const isHot = (p.downloads || 0) >= 100;
             
             return `<div onclick="showDetail('${p.id}')" class="plugin-card cursor-pointer ${featured ? 'featured-card' : ''}">
@@ -621,8 +666,11 @@
             currentPlugin = plugins.find(p => p.id === id);
             if (!currentPlugin) return;
             
+            // 标记为已查看此版本，NEW标签会消失
+            markAsViewed(currentPlugin.id, currentPlugin.version);
+            
             const icon = icons[currentPlugin.category] || '📦';
-            const isNew = currentPlugin.isNew === true || (currentPlugin.tags && currentPlugin.tags.includes('new'));
+            const isNew = false;  // 已经查看了，不再显示NEW
             const isHot = (currentPlugin.downloads || 0) >= 100;
             
             // 头部
@@ -759,6 +807,9 @@
         function closeModal() {
             document.getElementById('modal').classList.add('hidden');
             currentPlugin = null;
+            // 刷新列表，使NEW标签消失
+            render();
+            renderFeatured();
         }
         
         function installPlugin() {
