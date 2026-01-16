@@ -308,9 +308,22 @@
                     <input type="text" id="searchInput" placeholder="✨ 搜索插件名称、描述、作者..." class="search-input">
                 </div>
                 
-                <!-- 标签筛选 -->
-                <div class="flex items-center gap-2 mt-3 flex-wrap">
-                    <span class="text-xs text-gray-400 mr-1">快速筛选:</span>
+                <!-- 排序 + 标签筛选 -->
+                <div class="flex items-center gap-3 mt-3 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-500">📈 排序:</span>
+                        <select id="sortSelect" onchange="sortChange(this.value)" class="px-3 py-1.5 rounded-lg border border-gray-200 text-sm bg-white focus:border-purple-400 focus:ring-1 focus:ring-purple-200">
+                            <option value="default">默认</option>
+                            <option value="downloads_desc">下载量↓</option>
+                            <option value="downloads_asc">下载量↑</option>
+                            <option value="rating_desc">评分↓</option>
+                            <option value="rating_asc">评分↑</option>
+                            <option value="name_asc">名称A-Z</option>
+                            <option value="name_desc">名称Z-A</option>
+                        </select>
+                    </div>
+                    <span class="text-gray-300">|</span>
+                    <span class="text-xs text-gray-400">快速筛选:</span>
                     <button onclick="filterTag('all')" id="tag-all" class="tag-btn bg-gray-100 text-gray-600 active">全部</button>
                     <button onclick="filterTag('free')" id="tag-free" class="tag-btn bg-green-50 text-green-600">🆓 免费</button>
                     <button onclick="filterTag('hot')" id="tag-hot" class="tag-btn bg-red-50 text-red-600">🔥 热门</button>
@@ -376,6 +389,7 @@
         let currentPlugin = null;
         let currentCat = '';
         let currentTag = 'all';
+        let sortBy = 'default';  // 排序方式
         let myRatings = {};
         let viewedVersions = {};  // 已查看的插件版本 {pluginId: version}
         
@@ -488,6 +502,36 @@
             toast.textContent = msg;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 2000);
+        }
+        
+        // ========== 排序功能 ==========
+        function sortChange(value) {
+            sortBy = value;
+            render();
+            renderFeatured();
+        }
+        
+        function sortPluginList(list) {
+            if (sortBy === 'default') return list;
+            
+            return [...list].sort((a, b) => {
+                switch (sortBy) {
+                    case 'downloads_desc':
+                        return (b.downloads || 0) - (a.downloads || 0);
+                    case 'downloads_asc':
+                        return (a.downloads || 0) - (b.downloads || 0);
+                    case 'rating_desc':
+                        return (b.rating || 5) - (a.rating || 5);
+                    case 'rating_asc':
+                        return (a.rating || 5) - (b.rating || 5);
+                    case 'name_asc':
+                        return (a.cn_name || a.name || '').localeCompare(b.cn_name || b.name || '', 'zh-CN');
+                    case 'name_desc':
+                        return (b.cn_name || b.name || '').localeCompare(a.cn_name || a.name || '', 'zh-CN');
+                    default:
+                        return 0;
+                }
+            });
         }
         
         // ========== 标签筛选 ==========
@@ -610,6 +654,9 @@
             if (currentTag !== 'all') {
                 list = list.filter(p => matchTag(p, currentTag));
             }
+            
+            // 应用排序
+            list = sortPluginList(list);
             
             document.getElementById('countText').textContent = '(' + list.length + '个)';
             
