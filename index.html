@@ -356,10 +356,27 @@
         
         async function init() {
             try {
-                const res = await fetch(GITHUB_RAW + '?t=' + Date.now());
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-                plugins = data.plugins || [];
+                // 优先使用API代理（5000次/小时），失败则回退到GitHub Raw（60次/小时）
+                let data;
+                try {
+                    const apiRes = await fetch('/api/plugins');
+                    if (apiRes.ok) {
+                        data = await apiRes.json();
+                        if (data.success) {
+                            plugins = data.plugins || [];
+                        } else {
+                            throw new Error('API返回失败');
+                        }
+                    } else {
+                        throw new Error('API不可用');
+                    }
+                } catch (apiErr) {
+                    console.log('API代理不可用，回退到GitHub Raw:', apiErr.message);
+                    const rawRes = await fetch(GITHUB_RAW + '?t=' + Date.now());
+                    if (!rawRes.ok) throw new Error('HTTP ' + rawRes.status);
+                    data = await rawRes.json();
+                    plugins = data.plugins || [];
+                }
                 
                 document.getElementById('stat-total').textContent = plugins.length;
                 document.getElementById('stat-featured').textContent = plugins.filter(p => p.featured).length;
