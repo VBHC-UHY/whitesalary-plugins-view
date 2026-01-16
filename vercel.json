@@ -1,7 +1,3 @@
 {
-  "functions": {
-    "api/plugins.js": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  "version": 2
 }
