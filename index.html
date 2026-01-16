@@ -133,10 +133,13 @@
         </div>
 
         <!-- 分类标签 -->
-        <div class="flex flex-wrap gap-2 mb-6" id="category-pills">
-            <button onclick="filterByCategory('all')" data-category="all" class="category-pill active px-4 py-2 rounded-full bg-white text-gray-600 font-medium border border-gray-200 hover:border-purple-300 transition-all">
-                全部
-            </button>
+        <div class="glass-card rounded-2xl p-4 mb-6">
+            <div class="flex flex-wrap gap-2 items-center" id="category-pills">
+                <button onclick="filterByCategory('all')" data-category="all" class="category-pill active px-4 py-2 rounded-full bg-white text-gray-600 font-medium border border-gray-200 hover:border-purple-300 transition-all">
+                    📋 全部
+                </button>
+                <span class="text-gray-300 mx-1">|</span>
+            </div>
         </div>
 
         <!-- 精选推荐 -->
@@ -206,12 +209,45 @@
         let selectedPlugin = null;
         let currentCategory = 'all';
         
+        // 完整分类图标配置（按组整理）
         const categoryIcons = {
+            // 🎯 核心功能
             '娱乐': '🎮', '娱乐游戏': '🎮', '实用': '🛠️', '实用工具': '🛠️',
-            '社交': '💬', '社交互动': '💬', '天气': '🌤️', '天气日历': '🌤️',
-            '翻译': '🌐', '翻译语言': '🌐', '表情': '😊', '表情包': '😊',
-            '提醒': '⏰', '提醒工具': '⏰', '计算': '🧮', '其他': '📦'
+            '社交': '💬', '社交互动': '💬', 'AI': '🤖', 'AI增强': '🤖',
+            // 📺 媒体内容
+            '音乐': '🎵', '音乐音频': '🎵', '图片': '🖼️', '图片处理': '🖼️',
+            '视频': '📹', '视频相关': '📹', '媒体': '📺', '媒体综合': '📺',
+            // 📰 信息资讯
+            '新闻': '📰', '新闻资讯': '📰', '天气': '🌤️', '天气日历': '🌤️',
+            '搜索': '🔍', '网络搜索': '🔍', '翻译': '🌐', '翻译语言': '🌐',
+            // ⚡ 效率提升
+            '自动化': '⚡', '提醒': '⏰', '提醒备忘': '⏰',
+            '数据': '📊', '数据处理': '📊', '开发': '💻', '开发工具': '💻',
+            // 🎲 趣味休闲
+            '占卜': '🔮', '占卜算命': '🔮', '恶搞': '🃏', '趣味恶搞': '🃏',
+            '角色': '🎭', '角色扮演': '🎭', '抽奖': '🎰', '抽奖随机': '🎰',
+            // 🏠 生活服务
+            '生活': '🏠', '生活服务': '🏠', '学习': '📚', '学习教育': '📚',
+            '财务': '💰', '财务金融': '💰', '健康': '💪', '健康运动': '💪',
+            // 👥 群组管理
+            '群管': '👮', '群管理': '👮', '统计': '📈', '数据统计': '📈',
+            '互动': '🎉', '群互动': '🎉',
+            // 🔧 其他
+            '系统': '⚙️', '系统管理': '⚙️', '表情': '😊', '表情包': '😊',
+            '计算': '🧮', '其他': '📦'
         };
+        
+        // 分类分组配置（用于整齐显示）
+        const categoryGroups = [
+            { name: '核心功能', icon: '🎯', cats: ['娱乐', '实用', '社交', 'AI'] },
+            { name: '媒体内容', icon: '📺', cats: ['音乐', '图片', '视频', '媒体'] },
+            { name: '信息资讯', icon: '📰', cats: ['新闻', '天气', '搜索', '翻译'] },
+            { name: '效率提升', icon: '⚡', cats: ['自动化', '提醒', '数据', '开发'] },
+            { name: '趣味休闲', icon: '🎲', cats: ['占卜', '恶搞', '角色', '抽奖'] },
+            { name: '生活服务', icon: '🏠', cats: ['生活', '学习', '财务', '健康'] },
+            { name: '群组管理', icon: '👥', cats: ['群管', '统计', '互动'] },
+            { name: '其他', icon: '🔧', cats: ['系统', '表情', '计算', '其他'] }
+        ];
         
         async function init() {
             try {
@@ -231,22 +267,62 @@
                 const categories = [...new Set(allPlugins.map(p => p.category))];
                 document.getElementById('category-count').textContent = categories.length;
                 
-                // 填充分类选择器
+                // 填充分类选择器（下拉框按组显示）
                 const categorySelect = document.getElementById('category-filter');
-                const categoryPills = document.getElementById('category-pills');
-                
-                categories.forEach(cat => {
-                    const icon = categoryIcons[cat] || '📦';
-                    
+                categoryGroups.forEach(group => {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = group.icon + ' ' + group.name;
+                    group.cats.forEach(cat => {
+                        if (categories.includes(cat)) {
+                            const option = document.createElement('option');
+                            option.value = cat;
+                            option.textContent = (categoryIcons[cat] || '📦') + ' ' + cat;
+                            optgroup.appendChild(option);
+                        }
+                    });
+                    if (optgroup.children.length > 0) {
+                        categorySelect.appendChild(optgroup);
+                    }
+                });
+                // 添加未分组的分类
+                const groupedCats = categoryGroups.flatMap(g => g.cats);
+                const ungrouped = categories.filter(c => !groupedCats.includes(c));
+                ungrouped.forEach(cat => {
                     const option = document.createElement('option');
                     option.value = cat;
-                    option.textContent = icon + ' ' + cat;
+                    option.textContent = (categoryIcons[cat] || '📦') + ' ' + cat;
                     categorySelect.appendChild(option);
+                });
+                
+                // 填充分类标签（按行整齐显示）
+                const categoryPills = document.getElementById('category-pills');
+                categoryGroups.forEach((group, idx) => {
+                    const groupCats = group.cats.filter(c => categories.includes(c));
+                    if (groupCats.length === 0) return;
                     
+                    groupCats.forEach(cat => {
+                        const pill = document.createElement('button');
+                        pill.className = 'category-pill px-3 py-1.5 rounded-full bg-white text-gray-600 text-sm font-medium border border-gray-200 hover:border-purple-300 transition-all';
+                        pill.onclick = () => filterByCategory(cat);
+                        pill.textContent = (categoryIcons[cat] || '📦') + ' ' + cat;
+                        pill.dataset.category = cat;
+                        categoryPills.appendChild(pill);
+                    });
+                    
+                    // 添加分隔符（最后一组不加）
+                    if (idx < categoryGroups.length - 1 && groupCats.length > 0) {
+                        const sep = document.createElement('span');
+                        sep.className = 'text-gray-300 mx-1';
+                        sep.textContent = '|';
+                        categoryPills.appendChild(sep);
+                    }
+                });
+                // 添加未分组的分类
+                ungrouped.forEach(cat => {
                     const pill = document.createElement('button');
-                    pill.className = 'category-pill px-4 py-2 rounded-full bg-white text-gray-600 font-medium border border-gray-200 hover:border-purple-300 transition-all';
+                    pill.className = 'category-pill px-3 py-1.5 rounded-full bg-white text-gray-600 text-sm font-medium border border-gray-200 hover:border-purple-300 transition-all';
                     pill.onclick = () => filterByCategory(cat);
-                    pill.textContent = icon + ' ' + cat;
+                    pill.textContent = (categoryIcons[cat] || '📦') + ' ' + cat;
                     pill.dataset.category = cat;
                     categoryPills.appendChild(pill);
                 });
