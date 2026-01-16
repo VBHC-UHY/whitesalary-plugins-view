@@ -3,51 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>白的插件市场</title>
+    <title>白的插件市场 - 在线浏览</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<style>
+    <style>
         * { font-family: 'Noto Sans SC', sans-serif; }
         body {
-            background: linear-gradient(180deg, #fdf4ff 0%, #faf5ff 50%, #f5f3ff 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
-        .hero-gradient {
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f472b6 100%);
+        .hero-section {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
         }
-        .plugin-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .card {
             background: white;
-        }
-        .plugin-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px -15px rgba(168, 85, 247, 0.3);
-        }
-        .featured-card {
-            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-            border: 2px solid #fbbf24;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
         }
-        .btn-primary:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 25px -8px rgba(168, 85, 247, 0.5);
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
         }
-        .stat-card {
+        .featured-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+        }
+        .stat-box {
             background: rgba(255,255,255,0.2);
             backdrop-filter: blur(10px);
+            border-radius: 16px;
         }
-        .category-pill.active {
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        .category-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+        .category-btn:hover {
+            border-color: #a855f7;
+            color: #a855f7;
+        }
+        .category-btn.active {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
             color: white;
+            border-color: transparent;
+        }
+        .search-box {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px 16px 12px 48px;
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .search-box:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
         }
         .notice-bar {
             background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
@@ -56,41 +86,45 @@
     </style>
 </head>
 <body>
-    <!-- 英雄区域 -->
-    <div class="hero-gradient text-white">
-        <div class="max-w-7xl mx-auto px-4 py-10">
-            <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+    <!-- 顶部英雄区 -->
+    <div class="hero-section text-white">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
                 <!-- 左侧标题 -->
                 <div class="flex items-center gap-4">
-                    <div class="text-6xl">🏪</div>
+                    <div class="text-5xl">🏪</div>
                     <div>
-                        <h1 class="text-4xl font-black">白的插件市场</h1>
-                        <p class="text-white/80 mt-1">专为白打造的扩展功能中心 · 在线浏览</p>
+                        <h1 class="text-3xl font-bold">白的插件市场</h1>
+                        <p class="text-white/80 text-sm mt-1">专为白打造的扩展功能中心 · 在线浏览版</p>
                     </div>
                 </div>
                 
-                <!-- 统计数据 -->
-                <div class="flex items-center gap-4">
-                    <div class="stat-card rounded-2xl px-6 py-4 text-center">
-                        <div class="text-3xl font-bold" id="plugin-count">-</div>
-                        <div class="text-sm text-white/70">可用插件</div>
+                <!-- 中间统计 -->
+                <div class="flex items-center gap-3">
+                    <div class="stat-box px-5 py-3 text-center">
+                        <div class="text-2xl font-bold" id="stat-total">-</div>
+                        <div class="text-xs text-white/70">📦 可用插件</div>
                     </div>
-                    <div class="stat-card rounded-2xl px-6 py-4 text-center">
-                        <div class="text-3xl font-bold" id="featured-count">-</div>
-                        <div class="text-sm text-white/70">精选推荐</div>
+                    <div class="stat-box px-5 py-3 text-center">
+                        <div class="text-2xl font-bold" id="stat-featured">-</div>
+                        <div class="text-xs text-white/70">⭐ 精选推荐</div>
+                    </div>
+                    <div class="stat-box px-5 py-3 text-center">
+                        <div class="text-2xl font-bold" id="stat-categories">-</div>
+                        <div class="text-xs text-white/70">🏷️ 插件分类</div>
                     </div>
                 </div>
                 
                 <!-- 右侧按钮 -->
-                <div class="flex items-center gap-3">
-                    <button onclick="goToLocalMarket()" class="px-5 py-3 rounded-xl bg-white/20 hover:bg-white/30 transition-all flex items-center gap-2 font-medium">
-                        <span>🏠</span> 进入本地市场
+                <div class="flex items-center gap-2">
+                    <button onclick="goLocal()" class="px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 text-sm font-medium transition">
+                        🏠 进入本地市场
                     </button>
-                    <a href="https://whitesalary-plugins-web.vercel.app" target="_blank" class="px-5 py-3 rounded-xl bg-white/20 hover:bg-white/30 transition-all flex items-center gap-2 font-medium">
-                        <span>📤</span> 提交插件
+                    <a href="https://whitesalary-plugins-web.vercel.app" target="_blank" class="px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 text-sm font-medium transition">
+                        📤 提交插件
                     </a>
-                    <a href="https://github.com/VBHC-UHY/whitesalary-plugins" target="_blank" class="px-5 py-3 rounded-xl bg-white/20 hover:bg-white/30 transition-all flex items-center gap-2 font-medium">
-                        <span>📂</span> GitHub
+                    <a href="https://github.com/VBHC-UHY/whitesalary-plugins" target="_blank" class="px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 text-sm font-medium transition">
+                        📂 GitHub
                     </a>
                 </div>
             </div>
@@ -98,321 +132,310 @@
     </div>
 
     <!-- 提示条 -->
-    <div class="notice-bar mx-4 lg:mx-auto max-w-7xl mt-4 rounded-lg px-4 py-3 flex items-center gap-2">
+    <div class="notice-bar mx-auto max-w-7xl mt-4 rounded-lg px-4 py-3 mx-4 flex items-center gap-2 text-sm">
         <span class="text-amber-600">💡</span>
-        <span class="text-amber-800">此页面仅供浏览，如需安装插件请点击「进入本地市场」（需先启动本地 WhiteSalary 服务）</span>
+        <span class="text-amber-800">此页面仅供浏览，如需安装插件请点击「进入本地市场」（需先启动本地服务）</span>
     </div>
 
     <!-- 主内容区 -->
-    <div class="max-w-7xl mx-auto px-4 py-8">
-        <!-- 搜索栏 -->
-        <div class="glass-card rounded-2xl p-4 mb-6 flex flex-col md:flex-row gap-4">
-            <div class="flex-1 relative">
-                <input type="text" id="search-input" placeholder="搜索插件名称、描述..."
-                       class="w-full pl-12 pr-4 py-3 rounded-xl bg-white border border-gray-200 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100">
-                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        <!-- 搜索和筛选 -->
+        <div class="glass rounded-2xl p-5 mb-6">
+            <div class="flex flex-col md:flex-row gap-4 items-center">
+                <div class="flex-1 relative w-full">
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="搜索插件名称、描述..." class="search-box">
+                </div>
+                <select id="categorySelect" class="px-4 py-3 rounded-xl bg-white border-2 border-gray-200 focus:border-purple-400 focus:outline-none cursor-pointer min-w-[140px]">
+                    <option value="">全部分类</option>
+                </select>
             </div>
-            <select id="category-filter" class="px-4 py-3 rounded-xl bg-white border border-gray-200 focus:outline-none focus:border-purple-400 cursor-pointer min-w-[150px]">
-                <option value="all">全部分类</option>
-            </select>
+            
+            <!-- 分类标签 -->
+            <div class="mt-4 flex flex-wrap gap-2" id="categoryTags">
+                <button class="category-btn active" data-cat="" onclick="filterCat('')">📋 全部</button>
+            </div>
         </div>
 
-        <!-- 分类标签 -->
-        <div class="flex flex-wrap gap-2 mb-6" id="category-pills">
-            <button onclick="filterByCategory('all')" data-category="all" class="category-pill active px-4 py-2 rounded-full bg-white text-gray-600 font-medium border border-gray-200 hover:border-purple-300 transition-all">
-                全部
-            </button>
-        </div>
-
-        <!-- 精选推荐 -->
-        <div id="featured-section" class="mb-10 hidden">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span class="text-2xl">⭐</span> 精选推荐
-            </h2>
-            <div id="featured-plugins" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        <!-- 精选区域 -->
+        <div id="featuredArea" class="mb-8 hidden">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">⭐ 精选推荐</h2>
+            <div id="featuredList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
 
         <!-- 所有插件 -->
         <div>
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span class="text-2xl">📦</span> 所有插件 <span class="text-gray-400 text-lg font-normal" id="filtered-count"></span>
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                📦 所有插件 <span class="text-gray-400 font-normal text-base" id="countText"></span>
             </h2>
-            <div id="plugins-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                <div class="col-span-full text-center py-16">
-                    <div class="text-5xl mb-4">⏳</div>
-                    <p class="text-gray-500">正在加载插件列表...</p>
+            <div id="pluginList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div class="col-span-full text-center py-12">
+                    <div class="text-4xl mb-3">⏳</div>
+                    <p class="text-gray-500">正在加载插件...</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 插件详情弹窗 -->
-    <div id="detail-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden">
-        <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-2xl">
-            <div id="detail-header" class="p-6 bg-gradient-to-r from-purple-50 to-pink-50 border-b"></div>
-            <div id="detail-content" class="p-6 overflow-y-auto" style="max-height: calc(85vh - 220px);"></div>
+    <!-- 详情弹窗 -->
+    <div id="modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden" onclick="if(event.target===this)closeModal()">
+        <div class="bg-white rounded-2xl w-full max-w-xl max-h-[80vh] overflow-hidden shadow-2xl">
+            <div id="modalHeader" class="p-5 bg-gradient-to-r from-purple-50 to-pink-50 border-b"></div>
+            <div id="modalBody" class="p-5 overflow-y-auto" style="max-height: calc(80vh - 180px);"></div>
             <div class="p-4 border-t bg-gray-50 flex items-center justify-between">
-                <a id="github-link" href="#" target="_blank" class="text-purple-600 hover:text-purple-800 flex items-center gap-2">
-                    <span>📂</span> 查看源代码
+                <a id="modalGithub" href="#" target="_blank" class="text-purple-600 hover:text-purple-800 text-sm flex items-center gap-1">
+                    📂 查看源代码
                 </a>
-                <div class="flex gap-3">
-                    <button onclick="closeDetail()" class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors font-medium">
-                        关闭
-                    </button>
-                    <button onclick="tryInstall()" class="btn-primary px-6 py-2.5 rounded-xl text-white font-medium">
-                        🔗 安装插件
-                    </button>
+                <div class="flex gap-2">
+                    <button onclick="closeModal()" class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 text-sm">关闭</button>
+                    <button onclick="installPlugin()" class="btn-primary px-4 py-2 rounded-lg text-white text-sm">🔗 安装</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- 底部 -->
-    <footer class="border-t border-purple-100 mt-8 bg-white/50">
-        <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-            <div class="flex items-center gap-2">
-                <span>🏪</span> 白的插件市场 - 在线浏览版
-            </div>
-            <div class="flex items-center gap-6">
-                <a href="https://github.com/VBHC-UHY/whitesalary-plugins" target="_blank" class="hover:text-purple-600">📂 GitHub 仓库</a>
+    <footer class="border-t border-white/20 mt-8 bg-white/30 backdrop-blur">
+        <div class="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-gray-600">
+            <span>🏪 白的插件市场 - 在线浏览版</span>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/VBHC-UHY/whitesalary-plugins" target="_blank" class="hover:text-purple-600">📂 GitHub仓库</a>
                 <a href="https://whitesalary-plugins-web.vercel.app" target="_blank" class="hover:text-purple-600">📤 提交插件</a>
-                <button onclick="goToLocalMarket()" class="hover:text-purple-600">🏠 本地市场</button>
+                <button onclick="goLocal()" class="hover:text-purple-600">🏠 本地市场</button>
             </div>
         </div>
     </footer>
 
     <script>
-        const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/VBHC-UHY/whitesalary-plugins/main/plugins.json';
-        const GITHUB_REPO_URL = 'https://github.com/VBHC-UHY/whitesalary-plugins/tree/main/plugins/';
-        const LOCAL_WEBUI_URL = 'http://127.0.0.1:18266';
+        // 配置
+        const GITHUB_RAW = 'https://raw.githubusercontent.com/VBHC-UHY/whitesalary-plugins/main/plugins.json';
+        const GITHUB_REPO = 'https://github.com/VBHC-UHY/whitesalary-plugins/tree/main/plugins/';
+        const LOCAL_URL = 'http://127.0.0.1:5266';
         
-        let allPlugins = [];
-        let selectedPlugin = null;
-        let currentCategory = 'all';
+        // 数据
+        let plugins = [];
+        let currentPlugin = null;
+        let currentCat = '';
         
-        const categoryIcons = {
-            // 🎯 核心功能
-            '娱乐': '🎮', '娱乐游戏': '🎮', '实用': '🛠️', '实用工具': '🛠️',
-            '社交': '💬', '社交互动': '💬', 'AI': '🤖', 'AI增强': '🤖',
-            // 📺 媒体内容
-            '音乐': '🎵', '音乐音频': '🎵', '图片': '🖼️', '图片处理': '🖼️',
-            '视频': '📹', '视频相关': '📹', '媒体': '📺', '媒体综合': '📺',
-            // 📰 信息资讯
-            '新闻': '📰', '新闻资讯': '📰', '天气': '🌤️', '天气日历': '🌤️',
-            '搜索': '🔍', '网络搜索': '🔍', '翻译': '🌐', '翻译语言': '🌐',
-            // ⚡ 效率提升
-            '自动化': '⚡', '提醒': '⏰', '提醒备忘': '⏰',
-            '数据': '📊', '数据处理': '📊', '开发': '💻', '开发工具': '💻',
-            // 🎲 趣味休闲
-            '占卜': '🔮', '占卜算命': '🔮', '恶搞': '🃏', '趣味恶搞': '🃏',
-            '角色': '🎭', '角色扮演': '🎭', '抽奖': '🎰', '抽奖随机': '🎰',
-            // 🏠 生活服务
-            '生活': '🏠', '生活服务': '🏠', '学习': '📚', '学习教育': '📚',
-            '财务': '💰', '财务金融': '💰', '健康': '💪', '健康运动': '💪',
-            // 👥 群组管理
-            '群管': '👮', '群管理': '👮', '统计': '📈', '数据统计': '📈',
-            '互动': '🎉', '群互动': '🎉',
-            // 🔧 其他
-            '系统': '⚙️', '系统管理': '⚙️', '表情': '😊', '表情包': '😊',
-            '计算': '🧮', '其他': '📦'
+        // 分类图标
+        const icons = {
+            '娱乐': '🎮', '实用': '🛠️', '社交': '💬', 'AI': '🤖',
+            '音乐': '🎵', '图片': '🖼️', '视频': '📹', '媒体': '📺',
+            '新闻': '📰', '天气': '🌤️', '搜索': '🔍', '翻译': '🌐',
+            '自动化': '⚡', '提醒': '⏰', '数据': '📊', '开发': '💻',
+            '占卜': '🔮', '恶搞': '🃏', '角色': '🎭', '抽奖': '🎰',
+            '生活': '🏠', '学习': '📚', '财务': '💰', '健康': '💪',
+            '群管': '👮', '统计': '📈', '互动': '🎉',
+            '系统': '⚙️', '表情': '😊', '计算': '🧮', '其他': '📦'
         };
         
+        // 初始化
         async function init() {
             try {
-                const response = await fetch(GITHUB_RAW_URL + '?t=' + Date.now());
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                const data = await response.json();
-                allPlugins = data.plugins || [];
+                // 加缓存破坏参数确保获取最新
+                const res = await fetch(GITHUB_RAW + '?t=' + Date.now());
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                plugins = data.plugins || [];
                 
-                document.getElementById('plugin-count').textContent = allPlugins.length;
-                const featuredCount = allPlugins.filter(p => p.featured).length;
-                document.getElementById('featured-count').textContent = featuredCount;
+                // 更新统计
+                const statTotal = document.getElementById('stat-total');
+                const statFeatured = document.getElementById('stat-featured');
+                const statCats = document.getElementById('stat-categories');
                 
-                // 分类
-                const categories = [...new Set(allPlugins.map(p => p.category))];
-                document.getElementById('category-count').textContent = categories.length;
+                if (statTotal) statTotal.textContent = plugins.length;
                 
-                // 填充分类选择器
-                const categorySelect = document.getElementById('category-filter');
-                const categoryPills = document.getElementById('category-pills');
+                const featuredCount = plugins.filter(p => p.featured).length;
+                if (statFeatured) statFeatured.textContent = featuredCount;
                 
-                categories.forEach(cat => {
-                    const icon = categoryIcons[cat] || '📦';
-                    
-                    const option = document.createElement('option');
-                    option.value = cat;
-                    option.textContent = icon + ' ' + cat;
-                    categorySelect.appendChild(option);
-                    
-                    const pill = document.createElement('button');
-                    pill.className = 'category-pill px-4 py-2 rounded-full bg-white text-gray-600 font-medium border border-gray-200 hover:border-purple-300 transition-all';
-                    pill.onclick = () => filterByCategory(cat);
-                    pill.textContent = icon + ' ' + cat;
-                    pill.dataset.category = cat;
-                    categoryPills.appendChild(pill);
-                });
+                const cats = [...new Set(plugins.map(p => p.category).filter(Boolean))];
+                if (statCats) statCats.textContent = cats.length;
                 
-                renderPlugins();
+                // 填充分类下拉框
+                const sel = document.getElementById('categorySelect');
+                if (sel) {
+                    cats.sort().forEach(cat => {
+                        const opt = document.createElement('option');
+                        opt.value = cat;
+                        opt.textContent = (icons[cat] || '📦') + ' ' + cat;
+                        sel.appendChild(opt);
+                    });
+                }
+                
+                // 填充分类标签
+                const tags = document.getElementById('categoryTags');
+                if (tags) {
+                    cats.sort().forEach(cat => {
+                        const btn = document.createElement('button');
+                        btn.className = 'category-btn';
+                        btn.dataset.cat = cat;
+                        btn.onclick = () => filterCat(cat);
+                        btn.textContent = (icons[cat] || '📦') + ' ' + cat;
+                        tags.appendChild(btn);
+                    });
+                }
+                
+                render();
                 renderFeatured();
-            } catch (error) {
-                document.getElementById('plugins-list').innerHTML = 
-                    '<div class="col-span-full text-center py-16">' +
-                    '<div class="text-5xl mb-4">😢</div>' +
-                    '<p class="text-gray-500">加载失败: ' + error.message + '</p>' +
-                    '<p class="text-gray-400 text-sm mt-2">请检查网络连接或稍后重试</p></div>';
+            } catch (err) {
+                const list = document.getElementById('pluginList');
+                if (list) {
+                    list.innerHTML = '<div class="col-span-full text-center py-12">' +
+                        '<div class="text-4xl mb-3">😢</div>' +
+                        '<p class="text-gray-500">加载失败: ' + err.message + '</p>' +
+                        '<p class="text-gray-400 text-sm mt-1">请刷新页面重试</p></div>';
+                }
             }
         }
         
-        function filterByCategory(category) {
-            currentCategory = category;
-            document.querySelectorAll('.category-pill').forEach(pill => {
-                pill.classList.toggle('active', pill.dataset.category === category || (category === 'all' && pill.dataset.category === 'all'));
+        // 过滤分类
+        function filterCat(cat) {
+            currentCat = cat;
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.cat === cat);
             });
-            document.getElementById('category-filter').value = category;
-            renderPlugins();
+            const sel = document.getElementById('categorySelect');
+            if (sel) sel.value = cat;
+            render();
         }
         
+        // 渲染精选
         function renderFeatured() {
-            const featured = allPlugins.filter(p => p.featured);
-            if (featured.length === 0) return;
-            document.getElementById('featured-section').classList.remove('hidden');
-            document.getElementById('featured-plugins').innerHTML = featured.map(p => createPluginCard(p, true)).join('');
+            const featured = plugins.filter(p => p.featured);
+            const area = document.getElementById('featuredArea');
+            const list = document.getElementById('featuredList');
+            if (!area || !list) return;
+            
+            if (featured.length === 0) {
+                area.classList.add('hidden');
+                return;
+            }
+            area.classList.remove('hidden');
+            list.innerHTML = featured.map(p => makeCard(p, true)).join('');
         }
         
-        function renderPlugins() {
-            const search = document.getElementById('search-input').value.toLowerCase();
-            let filtered = allPlugins;
+        // 渲染列表
+        function render() {
+            const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+            let list = plugins;
             
             if (search) {
-                filtered = filtered.filter(p => 
+                list = list.filter(p => 
                     (p.cn_name || '').toLowerCase().includes(search) ||
                     (p.name || '').toLowerCase().includes(search) ||
                     (p.description || '').toLowerCase().includes(search)
                 );
             }
-            if (currentCategory !== 'all') {
-                filtered = filtered.filter(p => p.category === currentCategory);
+            if (currentCat) {
+                list = list.filter(p => p.category === currentCat);
             }
             
-            document.getElementById('filtered-count').textContent = '(' + filtered.length + '个)';
+            const countEl = document.getElementById('countText');
+            if (countEl) countEl.textContent = '(' + list.length + '个)';
             
-            if (filtered.length === 0) {
-                document.getElementById('plugins-list').innerHTML = 
-                    '<div class="col-span-full text-center py-16">' +
-                    '<div class="text-5xl mb-4">🔍</div>' +
+            const container = document.getElementById('pluginList');
+            if (!container) return;
+            
+            if (list.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center py-12">' +
+                    '<div class="text-4xl mb-3">🔍</div>' +
                     '<p class="text-gray-500">没有找到匹配的插件</p></div>';
                 return;
             }
-            document.getElementById('plugins-list').innerHTML = filtered.map(p => createPluginCard(p)).join('');
+            container.innerHTML = list.map(p => makeCard(p)).join('');
         }
         
-        function createPluginCard(plugin, isFeatured) {
-            const icon = categoryIcons[plugin.category] || '📦';
-            return '<div onclick="showDetail(\'' + plugin.id + '\')" class="plugin-card ' + 
-                   (isFeatured ? 'featured-card' : '') + 
-                   ' rounded-2xl p-5 cursor-pointer border border-gray-100">' +
-                   '<div class="flex items-start gap-3 mb-3">' +
-                   '<div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-2xl">' + icon + '</div>' +
-                   '<div class="flex-1 min-w-0">' +
-                   '<div class="flex items-center gap-2">' +
-                   '<h3 class="font-bold text-gray-800 truncate">' + (plugin.cn_name || plugin.name) + '</h3>' +
-                   (plugin.featured ? '<span class="bg-amber-400 text-white text-xs px-2 py-0.5 rounded-full">精选</span>' : '') +
-                   '</div>' +
-                   '<p class="text-xs text-gray-400">v' + plugin.version + ' · ' + plugin.author + '</p>' +
-                   '</div></div>' +
-                   '<p class="text-gray-600 text-sm mb-3 line-clamp-2">' + plugin.description + '</p>' +
-                   '<div class="flex items-center justify-between text-xs">' +
-                   '<span class="px-2 py-1 rounded-full bg-purple-50 text-purple-600">' + icon + ' ' + plugin.category + '</span>' +
-                   '<div class="flex items-center gap-2 text-gray-400">' +
-                   '<span>⬇️ ' + (plugin.downloads || 0) + '</span>' +
-                   '<span>⭐ ' + (plugin.rating || '5.0') + '</span>' +
-                   '</div></div></div>';
-        }
-        
-        function showDetail(pluginId) {
-            selectedPlugin = allPlugins.find(p => p.id === pluginId);
-            if (!selectedPlugin) return;
-            
-            const icon = categoryIcons[selectedPlugin.category] || '📦';
-            
-            document.getElementById('detail-header').innerHTML = 
-                '<div class="flex items-center gap-4">' +
-                '<div class="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center text-4xl">' + icon + '</div>' +
-                '<div>' +
+        // 创建卡片
+        function makeCard(p, featured) {
+            const icon = icons[p.category] || '📦';
+            return '<div onclick="showDetail(\'' + p.id + '\')" class="card p-4 cursor-pointer ' + (featured ? 'featured-card' : '') + '">' +
+                '<div class="flex items-start gap-3 mb-2">' +
+                '<div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center text-xl">' + icon + '</div>' +
+                '<div class="flex-1 min-w-0">' +
                 '<div class="flex items-center gap-2">' +
-                '<h2 class="text-2xl font-bold text-gray-800">' + (selectedPlugin.cn_name || selectedPlugin.name) + '</h2>' +
-                (selectedPlugin.featured ? '<span class="bg-amber-400 text-white text-xs px-2 py-0.5 rounded-full">⭐ 精选</span>' : '') +
+                '<h3 class="font-bold text-gray-800 truncate text-sm">' + (p.cn_name || p.name) + '</h3>' +
+                (p.featured ? '<span class="bg-amber-400 text-white text-xs px-1.5 py-0.5 rounded">精选</span>' : '') +
                 '</div>' +
-                '<p class="text-gray-500">v' + selectedPlugin.version + ' · ' + selectedPlugin.author + ' · ' + selectedPlugin.category + '</p>' +
-                '<div class="flex items-center gap-4 mt-1 text-sm text-gray-400">' +
-                '<span>⬇️ ' + (selectedPlugin.downloads || 0) + ' 下载</span>' +
-                '<span>⭐ ' + (selectedPlugin.rating || '5.0') + ' 评分</span>' +
-                '</div></div></div>';
-            
-            let contentHtml = '<div class="space-y-5">';
-            
-            contentHtml += '<div><h3 class="font-bold text-gray-700 mb-2">📝 插件介绍</h3>' +
-                          '<p class="text-gray-600 bg-gray-50 p-4 rounded-xl">' + (selectedPlugin.full_description || selectedPlugin.description) + '</p></div>';
-            
-            if (selectedPlugin.features && selectedPlugin.features.length > 0) {
-                contentHtml += '<div><h3 class="font-bold text-gray-700 mb-2">✨ 功能特色</h3><ul class="space-y-1">' +
-                              selectedPlugin.features.map(f => '<li class="flex items-center gap-2 text-gray-600"><span class="text-green-500">✓</span> ' + f + '</li>').join('') +
-                              '</ul></div>';
-            }
-            
-            if (selectedPlugin.usage) {
-                contentHtml += '<div><h3 class="font-bold text-gray-700 mb-2">💡 使用方法</h3>' +
-                              '<div class="bg-blue-50 text-blue-700 p-4 rounded-xl">' + selectedPlugin.usage + '</div></div>';
-            }
-            
-            if (selectedPlugin.commands && selectedPlugin.commands.length > 0) {
-                contentHtml += '<div><h3 class="font-bold text-gray-700 mb-2">⌨️ 触发命令</h3>' +
-                              '<div class="flex flex-wrap gap-2">' +
-                              selectedPlugin.commands.map(c => '<code class="bg-purple-50 text-purple-600 px-3 py-1 rounded-lg text-sm">' + c + '</code>').join('') +
-                              '</div></div>';
-            }
-            
-            if (selectedPlugin.changelog) {
-                contentHtml += '<div><h3 class="font-bold text-gray-700 mb-2">📋 更新日志</h3>' +
-                              '<div class="bg-gray-50 text-gray-600 p-4 rounded-xl text-sm">' + selectedPlugin.changelog + '</div></div>';
-            }
-            
-            contentHtml += '</div>';
-            
-            document.getElementById('detail-content').innerHTML = contentHtml;
-            document.getElementById('github-link').href = GITHUB_REPO_URL + selectedPlugin.id;
-            document.getElementById('detail-modal').classList.remove('hidden');
+                '<p class="text-xs text-gray-400">v' + p.version + ' · ' + p.author + '</p>' +
+                '</div></div>' +
+                '<p class="text-gray-600 text-xs mb-2 line-clamp-2">' + p.description + '</p>' +
+                '<div class="flex items-center justify-between text-xs">' +
+                '<span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-600">' + icon + ' ' + p.category + '</span>' +
+                '<span class="text-gray-400">⬇️' + (p.downloads || 0) + '</span>' +
+                '</div></div>';
         }
         
-        function closeDetail() {
-            document.getElementById('detail-modal').classList.add('hidden');
-            selectedPlugin = null;
+        // 显示详情
+        function showDetail(id) {
+            currentPlugin = plugins.find(p => p.id === id);
+            if (!currentPlugin) return;
+            
+            const icon = icons[currentPlugin.category] || '📦';
+            const header = document.getElementById('modalHeader');
+            const body = document.getElementById('modalBody');
+            const github = document.getElementById('modalGithub');
+            
+            if (header) {
+                header.innerHTML = '<div class="flex items-center gap-3">' +
+                    '<div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-3xl">' + icon + '</div>' +
+                    '<div>' +
+                    '<h2 class="text-xl font-bold text-gray-800">' + (currentPlugin.cn_name || currentPlugin.name) + '</h2>' +
+                    '<p class="text-sm text-gray-500">v' + currentPlugin.version + ' · ' + currentPlugin.author + ' · ' + currentPlugin.category + '</p>' +
+                    '</div></div>';
+            }
+            
+            if (body) {
+                let html = '<div class="space-y-4">';
+                html += '<div><h3 class="font-bold text-gray-700 mb-1 text-sm">📝 介绍</h3>' +
+                    '<p class="text-gray-600 text-sm bg-gray-50 p-3 rounded-lg">' + (currentPlugin.full_description || currentPlugin.description) + '</p></div>';
+                
+                if (currentPlugin.features?.length) {
+                    html += '<div><h3 class="font-bold text-gray-700 mb-1 text-sm">✨ 特色</h3><ul class="text-sm space-y-1">' +
+                        currentPlugin.features.map(f => '<li class="flex items-center gap-1 text-gray-600"><span class="text-green-500">✓</span>' + f + '</li>').join('') +
+                        '</ul></div>';
+                }
+                
+                if (currentPlugin.commands?.length) {
+                    html += '<div><h3 class="font-bold text-gray-700 mb-1 text-sm">⌨️ 命令</h3>' +
+                        '<div class="flex flex-wrap gap-1">' +
+                        currentPlugin.commands.map(c => '<code class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded text-xs">' + c + '</code>').join('') +
+                        '</div></div>';
+                }
+                
+                html += '</div>';
+                body.innerHTML = html;
+            }
+            
+            if (github) github.href = GITHUB_REPO + currentPlugin.id;
+            
+            document.getElementById('modal')?.classList.remove('hidden');
         }
         
-        function tryInstall() {
-            if (!selectedPlugin) return;
-            // 直接打开本地市场，带安装参数
-            window.open(LOCAL_WEBUI_URL + '/plugins/market?install=' + selectedPlugin.id, '_blank');
+        function closeModal() {
+            document.getElementById('modal')?.classList.add('hidden');
+            currentPlugin = null;
         }
         
-        function goToLocalMarket() {
-            // 直接打开本地市场
-            window.open(LOCAL_WEBUI_URL + '/plugins/market', '_blank');
+        function installPlugin() {
+            if (currentPlugin) {
+                window.open(LOCAL_URL + '/plugins/market?install=' + currentPlugin.id, '_blank');
+            }
         }
         
-        document.getElementById('detail-modal').addEventListener('click', function(e) {
-            if (e.target === this) closeDetail();
+        function goLocal() {
+            window.open(LOCAL_URL + '/plugins/market', '_blank');
+        }
+        
+        // 事件绑定
+        document.getElementById('searchInput')?.addEventListener('input', render);
+        document.getElementById('categorySelect')?.addEventListener('change', function() {
+            filterCat(this.value);
         });
         
-        document.getElementById('search-input').addEventListener('input', renderPlugins);
-        document.getElementById('category-filter').addEventListener('change', function() {
-            filterByCategory(this.value);
-        });
-        
+        // 启动
         init();
     </script>
 </body>
-
 </html>
