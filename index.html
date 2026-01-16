@@ -391,6 +391,7 @@
         let currentCat = '';
         let currentTag = 'all';
         let sortBy = 'default';  // 排序方式
+        let selectedAuthor = '';  // 作者筛选
         let myRatings = {};
         let viewedVersions = {};  // 已查看的插件版本 {pluginId: version}
         let favorites = [];  // 收藏列表
@@ -504,6 +505,30 @@
             toast.textContent = msg;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 2000);
+        }
+        
+        // ========== 作者筛选 ==========
+        function filterByAuthor(author) {
+            selectedAuthor = author;
+            currentCat = '';
+            currentTag = 'all';
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.cat-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.cat === '');
+            });
+            render();
+            renderFeatured();
+            showToast('👤 显示 ' + author + ' 的所有插件');
+        }
+        
+        function clearAuthorFilter() {
+            selectedAuthor = '';
+            render();
+            renderFeatured();
+        }
+        
+        function getAuthorPluginCount(author) {
+            return plugins.filter(p => p.author === author).length;
         }
         
         // ========== 收藏功能 ==========
@@ -697,6 +722,11 @@
                 list = list.filter(p => matchTag(p, currentTag));
             }
             
+            // 作者
+            if (selectedAuthor) {
+                list = list.filter(p => p.author === selectedAuthor);
+            }
+            
             // 应用排序
             list = sortPluginList(list);
             
@@ -739,7 +769,7 @@
                             ${p.featured ? '<span class="bg-amber-400 text-white text-xs px-1 rounded">精选</span>' : ''}
                             ${isHot ? '<span class="bg-red-400 text-white text-xs px-1 rounded">热门</span>' : ''}
                         </div>
-                        <p class="text-xs text-gray-400">v${p.version} · ${p.author}</p>
+                        <p class="text-xs text-gray-400">v${p.version} · <span onclick="event.stopPropagation(); filterByAuthor('${p.author}')" class="cursor-pointer hover:text-purple-500 hover:underline">${p.author}</span></p>
                     </div>
                 </div>
                 <p class="text-gray-600 text-xs mb-2 line-clamp-2">${p.description}</p>
