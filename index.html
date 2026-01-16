@@ -201,7 +201,7 @@
 
     <script>
         // 直接使用 GitHub API（60次/小时，普通使用够了）
-        const GITHUB_API_URL = 'https://api.github.com/repos/VBHC-UHY/whitesalary-plugins/contents/plugins.json';
+        const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/VBHC-UHY/whitesalary-plugins/main/plugins.json';
         const GITHUB_REPO_URL = 'https://github.com/VBHC-UHY/whitesalary-plugins/tree/main/plugins/';
         const LOCAL_WEBUI_URL = 'http://127.0.0.1:5266';
         
@@ -251,15 +251,10 @@
         
         async function init() {
             try {
-                // 直接使用 GitHub API（实时更新，60次/小时）
-                const response = await fetch(GITHUB_API_URL, {
-                    headers: { 'Accept': 'application/vnd.github.v3+json' }
-                });
+                // 使用 GitHub Raw 获取数据
+                const response = await fetch(GITHUB_RAW_URL + '?t=' + Date.now());
                 if (!response.ok) throw new Error('HTTP ' + response.status);
-                const fileInfo = await response.json();
-                // 解码 base64 内容
-                const content = atob(fileInfo.content.replace(/\n/g, ''));
-                const data = JSON.parse(decodeURIComponent(escape(content)));
+                const data = await response.json();
                 allPlugins = data.plugins || [];
                 
                 document.getElementById('plugin-count').textContent = allPlugins.length;
