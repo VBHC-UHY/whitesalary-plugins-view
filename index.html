@@ -462,7 +462,7 @@
                 case 'all': return true;
                 case 'free': return !plugin.price || plugin.price === 0;
                 case 'hot': return (plugin.downloads || 0) >= 100;
-                case 'new': return plugin.version === '1.0.0';
+                case 'new': return plugin.isNew === true || (plugin.tags && plugin.tags.includes('new'));
                 case 'featured': return plugin.featured === true;
                 case 'highrated': return (plugin.rating || 5) >= 4.5;
                 default: return true;
@@ -588,7 +588,7 @@
         
         function makeCard(p, featured) {
             const icon = icons[p.category] || '📦';
-            const isNew = p.version === '1.0.0';
+            const isNew = p.isNew === true || (p.tags && p.tags.includes('new'));
             const isHot = (p.downloads || 0) >= 100;
             
             return `<div onclick="showDetail('${p.id}')" class="plugin-card cursor-pointer ${featured ? 'featured-card' : ''}">
@@ -622,7 +622,7 @@
             if (!currentPlugin) return;
             
             const icon = icons[currentPlugin.category] || '📦';
-            const isNew = currentPlugin.version === '1.0.0';
+            const isNew = currentPlugin.isNew === true || (currentPlugin.tags && currentPlugin.tags.includes('new'));
             const isHot = (currentPlugin.downloads || 0) >= 100;
             
             // 头部
