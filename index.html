@@ -405,6 +405,8 @@
         let viewedVersions = {};  // 已查看的插件版本 {pluginId: version}
         let favorites = [];  // 收藏列表
         let searchHistory = [];  // 搜索历史
+        let pluginComments = {};  // 评论
+        let newComment = '';  // 新评论
         
         // 分类图标
         const icons = {
@@ -515,6 +517,95 @@
             toast.textContent = msg;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 2000);
+        }
+        
+        // ========== 评论功能 ==========
+        function loadComments() {
+            try {
+                const saved = localStorage.getItem('plugin_comments_view');
+                if (saved) pluginComments = JSON.parse(saved);
+            } catch (e) { pluginComments = {}; }
+        }
+        
+        function saveComments() {
+            try {
+                localStorage.setItem('plugin_comments_view', JSON.stringify(pluginComments));
+            } catch (e) {}
+        }
+        
+        function getPluginComments(pluginId) {
+            return pluginComments[pluginId] || [];
+        }
+        
+        function addComment(pluginId) {
+            const input = document.getElementById('commentInput');
+            const content = input.value.trim();
+            if (!content) {
+                showToast('请输入评论内容');
+                return;
+            }
+            
+            if (!pluginComments[pluginId]) {
+                pluginComments[pluginId] = [];
+            }
+            
+            pluginComments[pluginId].push({
+                id: Date.now(),
+                content: content,
+                time: new Date().toISOString(),
+                user: '我'
+            });
+            
+            saveComments();
+            input.value = '';
+            renderComments(pluginId);
+            showToast('💬 评论成功');
+        }
+        
+        function deleteComment(pluginId, commentId) {
+            if (!pluginComments[pluginId]) return;
+            pluginComments[pluginId] = pluginComments[pluginId].filter(c => c.id !== commentId);
+            saveComments();
+            renderComments(pluginId);
+            showToast('评论已删除');
+        }
+        
+        function formatCommentTime(isoTime) {
+            const date = new Date(isoTime);
+            const now = new Date();
+            const diff = (now - date) / 1000;
+            
+            if (diff < 60) return '刚刚';
+            if (diff < 3600) return Math.floor(diff / 60) + '分钟前';
+            if (diff < 86400) return Math.floor(diff / 3600) + '小时前';
+            if (diff < 604800) return Math.floor(diff / 86400) + '天前';
+            return date.toLocaleDateString('zh-CN');
+        }
+        
+        function renderComments(pluginId) {
+            const container = document.getElementById('commentsContainer');
+            const comments = getPluginComments(pluginId);
+            
+            if (comments.length === 0) {
+                container.innerHTML = '<div class="text-center py-6 text-gray-400"><span class="text-3xl mb-2 block">💭</span><p class="text-sm">暂无评论，来说两句吧~</p></div>';
+                return;
+            }
+            
+            container.innerHTML = comments.map(c => `
+                <div class="bg-gray-50 rounded-xl p-3 group">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xs">👤</span>
+                            <span class="text-sm font-medium text-gray-700">${c.user}</span>
+                            <span class="text-xs text-gray-400">${formatCommentTime(c.time)}</span>
+                        </div>
+                        <button onclick="deleteComment('${pluginId}', ${c.id})" class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 text-xs">删除</button>
+                    </div>
+                    <p class="text-gray-600 text-sm pl-8">${c.content}</p>
+                </div>
+            `).join('');
+            
+            document.getElementById('commentCount').textContent = '(' + comments.length + '条)';
         }
         
         // ========== 搜索历史 ==========
@@ -725,6 +816,7 @@
             loadViewedVersions();
             loadFavorites();
             loadSearchHistory();
+            loadComments();
             try {
                 let data;
                 try {
