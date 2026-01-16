@@ -26,49 +26,21 @@
             box-shadow: 0 8px 32px rgba(168, 85, 247, 0.1);
         }
         
-        .search-wrapper {
-            position: relative;
-            flex: 1;
-        }
-        .search-wrapper::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            background: linear-gradient(135deg, #a855f7, #ec4899, #f472b6);
-            border-radius: 18px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
-        }
-        .search-wrapper:focus-within::before {
-            opacity: 1;
-        }
         .search-input {
             width: 100%;
             padding: 14px 20px 14px 52px;
             border-radius: 16px;
             border: 2px solid #e9d5ff;
-            background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
+            background: white;
             font-size: 15px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.08);
         }
         .search-input:focus {
             outline: none;
-            border-color: transparent;
-            background: white;
-            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.15);
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
         }
         .search-input::placeholder { color: #c4b5fd; }
-        .search-icon {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-            color: #a855f7;
-        }
         
         .plugin-card {
             background: white;
@@ -86,28 +58,6 @@
         .featured-card {
             background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
             border: 2px solid #fbbf24;
-        }
-        
-        .cat-btn {
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: white;
-            border: 1px solid #e9d5ff;
-            color: #7c3aed;
-            white-space: nowrap;
-        }
-        .cat-btn:hover {
-            border-color: #a855f7;
-            background: #faf5ff;
-        }
-        .cat-btn.active {
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-            color: white;
-            border-color: transparent;
         }
         
         .stat-card {
@@ -131,90 +81,38 @@
             border-left: 4px solid #f59e0b;
         }
         
-        /* 下拉分类选择器 */
-        .cat-dropdown {
-            position: relative;
-        }
-        .cat-dropdown-btn {
-            padding: 12px 20px;
+        /* 精美下拉框 */
+        .cat-select {
+            padding: 14px 45px 14px 18px;
             border-radius: 16px;
             border: 2px solid #e9d5ff;
-            background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
+            background: white;
             font-size: 15px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23a855f7'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 20px;
             transition: all 0.3s ease;
-            min-width: 200px;
+            min-width: 180px;
+            color: #7c3aed;
+            font-weight: 500;
         }
-        .cat-dropdown-btn:hover {
+        .cat-select:focus {
+            outline: none;
             border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
         }
-        .cat-dropdown-btn.open {
-            border-color: #a855f7;
-            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.15);
-        }
-        .cat-dropdown-menu {
-            position: absolute;
-            top: calc(100% + 8px);
-            left: 0;
-            right: 0;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(168, 85, 247, 0.2);
-            border: 1px solid #e9d5ff;
-            z-index: 100;
-            display: none;
-            max-height: 400px;
-            overflow-y: auto;
-            min-width: 280px;
-        }
-        .cat-dropdown-menu.show {
-            display: block;
-            animation: fadeIn 0.2s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .cat-group-title {
-            padding: 10px 16px 6px;
-            font-size: 12px;
+        .cat-select optgroup {
             font-weight: 600;
             color: #9333ea;
             background: #faf5ff;
-            position: sticky;
-            top: 0;
         }
-        .cat-group-title:first-child {
-            border-radius: 16px 16px 0 0;
-        }
-        .cat-item {
-            padding: 10px 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.15s ease;
-            font-size: 14px;
+        .cat-select option {
+            font-weight: 400;
             color: #4b5563;
-        }
-        .cat-item:hover {
-            background: #faf5ff;
-            color: #7c3aed;
-        }
-        .cat-item.active {
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-            color: white;
-        }
-        
-        /* 快捷分类标签 */
-        .quick-cats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
+            padding: 8px;
         }
     </style>
 </head>
@@ -276,96 +174,82 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-4 py-8">
-        <!-- 搜索和分类 -->
-        <div class="glass-card rounded-2xl p-6 mb-6">
-            <div class="flex flex-col md:flex-row gap-4 items-start">
-                <div class="search-wrapper">
-                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- 搜索和分类 - 一行搞定 -->
+        <div class="glass-card rounded-2xl p-5 mb-6">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <!-- 搜索框 -->
+                <div class="flex-1 relative">
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                     <input type="text" id="searchInput" placeholder="✨ 搜索插件名称、描述、功能..." class="search-input">
                 </div>
                 
-                <!-- 下拉分类选择器 -->
-                <div class="cat-dropdown">
-                    <button class="cat-dropdown-btn" onclick="toggleDropdown()">
-                        <span id="selectedCatIcon">🏷️</span>
-                        <span id="selectedCatText">选择分类</span>
-                        <svg class="w-5 h-5 ml-auto text-purple-400 transition-transform" id="dropdownArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div class="cat-dropdown-menu" id="catMenu">
-                        <!-- 全部 -->
-                        <div class="cat-item active" data-cat="" onclick="selectCat('', '📋', '全部分类')">📋 全部分类</div>
-                        
-                        <!-- 🎯 核心功能 -->
-                        <div class="cat-group-title">🎯 核心功能</div>
-                        <div class="cat-item" data-cat="娱乐" onclick="selectCat('娱乐', '🎮', '娱乐')">🎮 娱乐</div>
-                        <div class="cat-item" data-cat="娱乐游戏" onclick="selectCat('娱乐游戏', '🎮', '娱乐游戏')">🎮 娱乐游戏</div>
-                        <div class="cat-item" data-cat="实用" onclick="selectCat('实用', '🛠️', '实用')">🛠️ 实用</div>
-                        <div class="cat-item" data-cat="实用工具" onclick="selectCat('实用工具', '🛠️', '实用工具')">🛠️ 实用工具</div>
-                        <div class="cat-item" data-cat="社交" onclick="selectCat('社交', '💬', '社交')">💬 社交</div>
-                        <div class="cat-item" data-cat="社交互动" onclick="selectCat('社交互动', '💬', '社交互动')">💬 社交互动</div>
-                        <div class="cat-item" data-cat="AI" onclick="selectCat('AI', '🤖', 'AI')">🤖 AI</div>
-                        <div class="cat-item" data-cat="AI增强" onclick="selectCat('AI增强', '🤖', 'AI增强')">🤖 AI增强</div>
-                        
-                        <!-- 📺 媒体内容 -->
-                        <div class="cat-group-title">📺 媒体内容</div>
-                        <div class="cat-item" data-cat="音乐" onclick="selectCat('音乐', '🎵', '音乐')">🎵 音乐</div>
-                        <div class="cat-item" data-cat="图片" onclick="selectCat('图片', '🖼️', '图片')">🖼️ 图片</div>
-                        <div class="cat-item" data-cat="视频" onclick="selectCat('视频', '📹', '视频')">📹 视频</div>
-                        <div class="cat-item" data-cat="媒体" onclick="selectCat('媒体', '📺', '媒体')">📺 媒体</div>
-                        
-                        <!-- 📰 信息资讯 -->
-                        <div class="cat-group-title">📰 信息资讯</div>
-                        <div class="cat-item" data-cat="新闻" onclick="selectCat('新闻', '📰', '新闻')">📰 新闻</div>
-                        <div class="cat-item" data-cat="天气" onclick="selectCat('天气', '🌤️', '天气')">🌤️ 天气</div>
-                        <div class="cat-item" data-cat="天气日历" onclick="selectCat('天气日历', '🌤️', '天气日历')">🌤️ 天气日历</div>
-                        <div class="cat-item" data-cat="搜索" onclick="selectCat('搜索', '🔍', '搜索')">🔍 搜索</div>
-                        <div class="cat-item" data-cat="翻译" onclick="selectCat('翻译', '🌐', '翻译')">🌐 翻译</div>
-                        <div class="cat-item" data-cat="翻译语言" onclick="selectCat('翻译语言', '🌐', '翻译语言')">🌐 翻译语言</div>
-                        
-                        <!-- ⚡ 效率提升 -->
-                        <div class="cat-group-title">⚡ 效率提升</div>
-                        <div class="cat-item" data-cat="自动化" onclick="selectCat('自动化', '⚡', '自动化')">⚡ 自动化</div>
-                        <div class="cat-item" data-cat="提醒" onclick="selectCat('提醒', '⏰', '提醒')">⏰ 提醒</div>
-                        <div class="cat-item" data-cat="数据" onclick="selectCat('数据', '📊', '数据')">📊 数据</div>
-                        <div class="cat-item" data-cat="开发" onclick="selectCat('开发', '💻', '开发')">💻 开发</div>
-                        
-                        <!-- 🎲 趣味休闲 -->
-                        <div class="cat-group-title">🎲 趣味休闲</div>
-                        <div class="cat-item" data-cat="占卜" onclick="selectCat('占卜', '🔮', '占卜')">🔮 占卜</div>
-                        <div class="cat-item" data-cat="恶搞" onclick="selectCat('恶搞', '🃏', '恶搞')">🃏 恶搞</div>
-                        <div class="cat-item" data-cat="角色" onclick="selectCat('角色', '🎭', '角色')">🎭 角色</div>
-                        <div class="cat-item" data-cat="抽奖" onclick="selectCat('抽奖', '🎰', '抽奖')">🎰 抽奖</div>
-                        
-                        <!-- 🏠 生活服务 -->
-                        <div class="cat-group-title">🏠 生活服务</div>
-                        <div class="cat-item" data-cat="生活" onclick="selectCat('生活', '🏠', '生活')">🏠 生活</div>
-                        <div class="cat-item" data-cat="学习" onclick="selectCat('学习', '📚', '学习')">📚 学习</div>
-                        <div class="cat-item" data-cat="财务" onclick="selectCat('财务', '💰', '财务')">💰 财务</div>
-                        <div class="cat-item" data-cat="健康" onclick="selectCat('健康', '💪', '健康')">💪 健康</div>
-                        
-                        <!-- 👥 群组管理 -->
-                        <div class="cat-group-title">👥 群组管理</div>
-                        <div class="cat-item" data-cat="群管" onclick="selectCat('群管', '👮', '群管')">👮 群管</div>
-                        <div class="cat-item" data-cat="统计" onclick="selectCat('统计', '📈', '统计')">📈 统计</div>
-                        <div class="cat-item" data-cat="互动" onclick="selectCat('互动', '🎉', '互动')">🎉 互动</div>
-                        
-                        <!-- 🔧 其他 -->
-                        <div class="cat-group-title">🔧 其他</div>
-                        <div class="cat-item" data-cat="系统" onclick="selectCat('系统', '⚙️', '系统')">⚙️ 系统</div>
-                        <div class="cat-item" data-cat="表情" onclick="selectCat('表情', '😊', '表情')">😊 表情</div>
-                        <div class="cat-item" data-cat="计算" onclick="selectCat('计算', '🧮', '计算')">🧮 计算</div>
-                        <div class="cat-item" data-cat="其他" onclick="selectCat('其他', '📦', '其他')">📦 其他</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 快捷标签（只显示有插件的分类） -->
-            <div class="quick-cats" id="quickCats">
-                <button class="cat-btn active" data-cat="" onclick="quickFilter('')">📋 全部</button>
+                <!-- 分类下拉框 - 包含全部28个分类 -->
+                <select id="catSelect" class="cat-select" onchange="filterCat(this.value)">
+                    <option value="">🏷️ 全部分类 (28)</option>
+                    
+                    <optgroup label="🎯 核心功能">
+                        <option value="娱乐">🎮 娱乐</option>
+                        <option value="娱乐游戏">🎮 娱乐游戏</option>
+                        <option value="实用">🛠️ 实用</option>
+                        <option value="实用工具">🛠️ 实用工具</option>
+                        <option value="社交">💬 社交</option>
+                        <option value="社交互动">💬 社交互动</option>
+                        <option value="AI">🤖 AI</option>
+                        <option value="AI增强">🤖 AI增强</option>
+                    </optgroup>
+                    
+                    <optgroup label="📺 媒体内容">
+                        <option value="音乐">🎵 音乐</option>
+                        <option value="图片">🖼️ 图片</option>
+                        <option value="视频">📹 视频</option>
+                        <option value="媒体">📺 媒体</option>
+                    </optgroup>
+                    
+                    <optgroup label="📰 信息资讯">
+                        <option value="新闻">📰 新闻</option>
+                        <option value="天气">🌤️ 天气</option>
+                        <option value="天气日历">🌤️ 天气日历</option>
+                        <option value="搜索">🔍 搜索</option>
+                        <option value="翻译">🌐 翻译</option>
+                        <option value="翻译语言">🌐 翻译语言</option>
+                    </optgroup>
+                    
+                    <optgroup label="⚡ 效率提升">
+                        <option value="自动化">⚡ 自动化</option>
+                        <option value="提醒">⏰ 提醒</option>
+                        <option value="数据">📊 数据</option>
+                        <option value="开发">💻 开发</option>
+                    </optgroup>
+                    
+                    <optgroup label="🎲 趣味休闲">
+                        <option value="占卜">🔮 占卜</option>
+                        <option value="恶搞">🃏 恶搞</option>
+                        <option value="角色">🎭 角色</option>
+                        <option value="抽奖">🎰 抽奖</option>
+                    </optgroup>
+                    
+                    <optgroup label="🏠 生活服务">
+                        <option value="生活">🏠 生活</option>
+                        <option value="学习">📚 学习</option>
+                        <option value="财务">💰 财务</option>
+                        <option value="健康">💪 健康</option>
+                    </optgroup>
+                    
+                    <optgroup label="👥 群组管理">
+                        <option value="群管">👮 群管</option>
+                        <option value="统计">📈 统计</option>
+                        <option value="互动">🎉 互动</option>
+                    </optgroup>
+                    
+                    <optgroup label="🔧 其他">
+                        <option value="系统">⚙️ 系统</option>
+                        <option value="表情">😊 表情</option>
+                        <option value="计算">🧮 计算</option>
+                        <option value="其他">📦 其他</option>
+                    </optgroup>
+                </select>
             </div>
         </div>
 
@@ -437,65 +321,10 @@
             '互动': '🎉', '系统': '⚙️', '表情': '😊', '计算': '🧮', '其他': '📦'
         };
         
-        // 下拉菜单
-        function toggleDropdown() {
-            const menu = document.getElementById('catMenu');
-            const btn = document.querySelector('.cat-dropdown-btn');
-            const arrow = document.getElementById('dropdownArrow');
-            menu.classList.toggle('show');
-            btn.classList.toggle('open');
-            arrow.style.transform = menu.classList.contains('show') ? 'rotate(180deg)' : '';
-        }
-        
-        function selectCat(cat, icon, text) {
+        function filterCat(cat) {
             currentCat = cat;
-            document.getElementById('selectedCatIcon').textContent = icon;
-            document.getElementById('selectedCatText').textContent = text;
-            
-            // 更新菜单选中状态
-            document.querySelectorAll('.cat-item').forEach(item => {
-                item.classList.toggle('active', item.dataset.cat === cat);
-            });
-            
-            // 更新快捷标签
-            document.querySelectorAll('.quick-cats .cat-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.cat === cat);
-            });
-            
-            toggleDropdown();
             render();
         }
-        
-        function quickFilter(cat) {
-            currentCat = cat;
-            const icon = cat ? icons[cat] : '📋';
-            const text = cat || '全部分类';
-            document.getElementById('selectedCatIcon').textContent = icon;
-            document.getElementById('selectedCatText').textContent = text;
-            
-            document.querySelectorAll('.cat-item').forEach(item => {
-                item.classList.toggle('active', item.dataset.cat === cat);
-            });
-            document.querySelectorAll('.quick-cats .cat-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.cat === cat);
-            });
-            
-            render();
-        }
-        
-        // 点击外部关闭下拉
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.cat-dropdown')) {
-                const menu = document.getElementById('catMenu');
-                const btn = document.querySelector('.cat-dropdown-btn');
-                const arrow = document.getElementById('dropdownArrow');
-                if (menu.classList.contains('show')) {
-                    menu.classList.remove('show');
-                    btn.classList.remove('open');
-                    arrow.style.transform = '';
-                }
-            }
-        });
         
         async function init() {
             try {
@@ -506,18 +335,6 @@
                 
                 document.getElementById('stat-total').textContent = plugins.length;
                 document.getElementById('stat-featured').textContent = plugins.filter(p => p.featured).length;
-                
-                // 生成快捷标签（只显示有插件的分类）
-                const usedCats = [...new Set(plugins.map(p => p.category).filter(Boolean))];
-                const quickCats = document.getElementById('quickCats');
-                usedCats.forEach(cat => {
-                    const btn = document.createElement('button');
-                    btn.className = 'cat-btn';
-                    btn.dataset.cat = cat;
-                    btn.onclick = () => quickFilter(cat);
-                    btn.textContent = (icons[cat] || '📦') + ' ' + cat;
-                    quickCats.appendChild(btn);
-                });
                 
                 render();
                 renderFeatured();
