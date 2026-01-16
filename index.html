@@ -332,6 +332,72 @@
         let plugins = [];
         let currentPlugin = null;
         let currentCat = '';
+        let myRatings = {};  // 用户评分
+        let hoverRating = 0;  // 悬停评分
+        
+        // 加载用户评分
+        function loadMyRatings() {
+            try {
+                const saved = localStorage.getItem('plugin_my_ratings');
+                if (saved) myRatings = JSON.parse(saved);
+            } catch (e) { myRatings = {}; }
+        }
+        
+        // 保存用户评分
+        function saveMyRatings() {
+            try {
+                localStorage.setItem('plugin_my_ratings', JSON.stringify(myRatings));
+            } catch (e) {}
+        }
+        
+        // 获取用户评分
+        function getMyRating(pluginId) {
+            return myRatings[pluginId] || 0;
+        }
+        
+        // 评分
+        function ratePlugin(pluginId, rating) {
+            if (!pluginId) return;
+            if (myRatings[pluginId] === rating) {
+                delete myRatings[pluginId];
+                alert('已取消评分');
+            } else {
+                myRatings[pluginId] = rating;
+                alert('已评分 ' + rating + ' 星 ⭐');
+            }
+            saveMyRatings();
+            if (currentPlugin) showDetail(currentPlugin.id);  // 刷新详情
+        }
+        
+        // 生成星星HTML
+        function renderStars(rating, interactive, pluginId) {
+            let html = '';
+            const filled = Math.round(rating || 5);
+            for (let i = 1; i <= 5; i++) {
+                if (interactive) {
+                    html += '<button onclick="ratePlugin(\'' + pluginId + '\',' + i + ')" ' +
+                            'onmouseenter="highlightStars(this,' + i + ')" ' +
+                            'onmouseleave="resetStars(this)" ' +
+                            'class="text-lg transition-transform hover:scale-125 focus:outline-none ' +
+                            (i <= filled ? 'text-amber-400' : 'text-gray-300') + '" data-star="' + i + '">★</button>';
+                } else {
+                    html += '<span class="text-sm ' + (i <= filled ? 'text-amber-400' : 'text-gray-300') + '">★</span>';
+                }
+            }
+            return html;
+        }
+        
+        function highlightStars(btn, rating) {
+            const parent = btn.parentElement;
+            parent.querySelectorAll('button').forEach((b, i) => {
+                b.className = b.className.replace(/text-(amber-400|gray-300)/g, '');
+                b.classList.add(i < rating ? 'text-amber-400' : 'text-gray-300');
+            });
+        }
+        
+        function resetStars(btn) {
+            if (currentPlugin) showDetail(currentPlugin.id);
+        }
         
         const icons = {
             '娱乐': '🎮', '娱乐游戏': '🎮', '实用': '🛠️', '实用工具': '🛠️',
@@ -355,6 +421,7 @@
         }
         
         async function init() {
+            loadMyRatings();  // 加载用户评分
             try {
                 // 优先使用API代理（5000次/小时），失败则回退到GitHub Raw（60次/小时）
                 let data;
@@ -442,7 +509,9 @@
                 '<p class="text-gray-600 text-xs mb-2 line-clamp-2">' + p.description + '</p>' +
                 '<div class="flex items-center justify-between">' +
                 '<span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 text-xs">' + p.category + '</span>' +
-                '<span class="text-xs text-gray-400">⬇️' + (p.downloads || 0) + '</span>' +
+                '<span class="flex items-center gap-1 text-xs text-gray-400">' +
+                '<span class="text-amber-400">★</span>' + (p.rating || 5).toFixed(1) +
+                '</span>' +
                 '</div></div>';
         }
         
@@ -460,6 +529,23 @@
                 '</div></div>';
             
             let html = '<div class="space-y-3">';
+            
+            // 评分区域
+            const myRating = getMyRating(currentPlugin.id);
+            html += '<div class="bg-purple-50 p-3 rounded-lg">' +
+                '<div class="flex items-center justify-between">' +
+                '<div class="flex items-center gap-2">' +
+                '<span class="text-sm text-gray-600">社区评分:</span>' +
+                renderStars(currentPlugin.rating || 5, false, currentPlugin.id) +
+                '<span class="text-sm font-bold text-amber-600">' + (currentPlugin.rating || 5).toFixed(1) + '</span>' +
+                '</div>' +
+                '<div class="flex items-center gap-2">' +
+                '<span class="text-sm text-gray-600">我的评分:</span>' +
+                '<span id="my-stars">' + renderStars(myRating, true, currentPlugin.id) + '</span>' +
+                (myRating ? '<span class="text-xs text-gray-400">(' + myRating + '分)</span>' : '<span class="text-xs text-gray-400">点击评分</span>') +
+                '</div>' +
+                '</div></div>';
+            
             html += '<div><h3 class="font-bold text-gray-700 mb-1 text-sm">📝 介绍</h3>' +
                 '<p class="text-gray-600 bg-gray-50 p-3 rounded-lg text-sm">' + (currentPlugin.full_description || currentPlugin.description) + '</p></div>';
             
