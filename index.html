@@ -10,20 +10,53 @@
     <style>
         * { font-family: 'Noto Sans SC', sans-serif; }
         
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        
         body {
             background: linear-gradient(180deg, #fdf4ff 0%, #faf5ff 30%, #f5f3ff 60%, #ede9fe 100%);
-            min-height: 100vh;
         }
         
         .hero-gradient {
             background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f472b6 100%);
         }
         
-        /* 左侧分类 - 网格布局 */
+        /* 主容器 */
+        .main-container {
+            height: calc(100vh - 70px);
+            display: flex;
+        }
+        
+        /* 左侧分类 - 独立滚动 */
         .sidebar {
             background: white;
             border-radius: 20px;
             box-shadow: 0 4px 20px rgba(168, 85, 247, 0.08);
+            overflow-y: auto;
+            height: 100%;
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #e9d5ff;
+            border-radius: 4px;
+        }
+        
+        /* 右侧内容 - 独立滚动 */
+        .content-area {
+            overflow-y: auto;
+            height: 100%;
+            padding-right: 8px;
+        }
+        .content-area::-webkit-scrollbar {
+            width: 6px;
+        }
+        .content-area::-webkit-scrollbar-thumb {
+            background: #d8b4fe;
+            border-radius: 6px;
         }
         
         .cat-grid {
@@ -70,7 +103,6 @@
             grid-column: span 2;
         }
         
-        /* 搜索框 */
         .search-input {
             width: 100%;
             padding: 14px 20px 14px 52px;
@@ -87,7 +119,6 @@
         }
         .search-input::placeholder { color: #c4b5fd; }
         
-        /* 插件卡片 */
         .plugin-card {
             background: white;
             border-radius: 16px;
@@ -131,7 +162,7 @@
 <body>
     <!-- 顶部 -->
     <div class="hero-gradient text-white">
-        <div class="px-6 py-6">
+        <div class="px-6 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
                     <div class="text-4xl">🏪</div>
@@ -169,116 +200,112 @@
         </div>
     </div>
 
-    <!-- 主体 -->
-    <div class="px-6 py-6">
-        <div class="flex gap-6">
-            <!-- 左侧分类 - 网格布局，一眼看完 -->
-            <div class="w-72 flex-shrink-0">
-                <div class="sidebar p-4">
-                    <div class="font-bold text-gray-800 mb-3 flex items-center gap-2">🏷️ 插件分类 <span class="text-xs text-gray-400 font-normal">(28)</span></div>
+    <!-- 主体：左右独立滚动 -->
+    <div class="main-container px-6 py-4 gap-6">
+        <!-- 左侧分类 - 独立滚动 -->
+        <div class="w-72 flex-shrink-0">
+            <div class="sidebar p-4">
+                <div class="font-bold text-gray-800 mb-3 flex items-center gap-2 sticky top-0 bg-white pb-2 z-10">
+                    🏷️ 插件分类 <span class="text-xs text-gray-400 font-normal">(28)</span>
+                </div>
+                
+                <div class="cat-grid">
+                    <div class="cat-item full-width active" data-cat="" onclick="filterCat('')">
+                        <span>📋</span> 全部插件
+                    </div>
                     
-                    <div class="cat-grid">
-                        <!-- 全部 -->
-                        <div class="cat-item full-width active" data-cat="" onclick="filterCat('')">
-                            <span>📋</span> 全部插件
-                        </div>
-                        
-                        <!-- 🎯 核心功能 -->
-                        <div class="cat-group-title">🎯 核心功能</div>
-                        <div class="cat-item" data-cat="娱乐" onclick="filterCat('娱乐')"><span>🎮</span>娱乐</div>
-                        <div class="cat-item" data-cat="娱乐游戏" onclick="filterCat('娱乐游戏')"><span>🎮</span>娱乐游戏</div>
-                        <div class="cat-item" data-cat="实用" onclick="filterCat('实用')"><span>🛠️</span>实用</div>
-                        <div class="cat-item" data-cat="实用工具" onclick="filterCat('实用工具')"><span>🛠️</span>实用工具</div>
-                        <div class="cat-item" data-cat="社交" onclick="filterCat('社交')"><span>💬</span>社交</div>
-                        <div class="cat-item" data-cat="社交互动" onclick="filterCat('社交互动')"><span>💬</span>社交互动</div>
-                        <div class="cat-item" data-cat="AI" onclick="filterCat('AI')"><span>🤖</span>AI</div>
-                        <div class="cat-item" data-cat="AI增强" onclick="filterCat('AI增强')"><span>🤖</span>AI增强</div>
-                        
-                        <!-- 📺 媒体内容 -->
-                        <div class="cat-group-title">📺 媒体内容</div>
-                        <div class="cat-item" data-cat="音乐" onclick="filterCat('音乐')"><span>🎵</span>音乐</div>
-                        <div class="cat-item" data-cat="图片" onclick="filterCat('图片')"><span>🖼️</span>图片</div>
-                        <div class="cat-item" data-cat="视频" onclick="filterCat('视频')"><span>📹</span>视频</div>
-                        <div class="cat-item" data-cat="媒体" onclick="filterCat('媒体')"><span>📺</span>媒体</div>
-                        
-                        <!-- 📰 信息资讯 -->
-                        <div class="cat-group-title">📰 信息资讯</div>
-                        <div class="cat-item" data-cat="新闻" onclick="filterCat('新闻')"><span>📰</span>新闻</div>
-                        <div class="cat-item" data-cat="天气" onclick="filterCat('天气')"><span>🌤️</span>天气</div>
-                        <div class="cat-item" data-cat="天气日历" onclick="filterCat('天气日历')"><span>🌤️</span>天气日历</div>
-                        <div class="cat-item" data-cat="搜索" onclick="filterCat('搜索')"><span>🔍</span>搜索</div>
-                        <div class="cat-item" data-cat="翻译" onclick="filterCat('翻译')"><span>🌐</span>翻译</div>
-                        <div class="cat-item" data-cat="翻译语言" onclick="filterCat('翻译语言')"><span>🌐</span>翻译语言</div>
-                        
-                        <!-- ⚡ 效率 & 🎲 趣味 -->
-                        <div class="cat-group-title">⚡ 效率 / 🎲 趣味</div>
-                        <div class="cat-item" data-cat="自动化" onclick="filterCat('自动化')"><span>⚡</span>自动化</div>
-                        <div class="cat-item" data-cat="提醒" onclick="filterCat('提醒')"><span>⏰</span>提醒</div>
-                        <div class="cat-item" data-cat="数据" onclick="filterCat('数据')"><span>📊</span>数据</div>
-                        <div class="cat-item" data-cat="开发" onclick="filterCat('开发')"><span>💻</span>开发</div>
-                        <div class="cat-item" data-cat="占卜" onclick="filterCat('占卜')"><span>🔮</span>占卜</div>
-                        <div class="cat-item" data-cat="恶搞" onclick="filterCat('恶搞')"><span>🃏</span>恶搞</div>
-                        <div class="cat-item" data-cat="角色" onclick="filterCat('角色')"><span>🎭</span>角色</div>
-                        <div class="cat-item" data-cat="抽奖" onclick="filterCat('抽奖')"><span>🎰</span>抽奖</div>
-                        
-                        <!-- 🏠 生活 & 👥 群组 -->
-                        <div class="cat-group-title">🏠 生活 / 👥 群组</div>
-                        <div class="cat-item" data-cat="生活" onclick="filterCat('生活')"><span>🏠</span>生活</div>
-                        <div class="cat-item" data-cat="学习" onclick="filterCat('学习')"><span>📚</span>学习</div>
-                        <div class="cat-item" data-cat="财务" onclick="filterCat('财务')"><span>💰</span>财务</div>
-                        <div class="cat-item" data-cat="健康" onclick="filterCat('健康')"><span>💪</span>健康</div>
-                        <div class="cat-item" data-cat="群管" onclick="filterCat('群管')"><span>👮</span>群管</div>
-                        <div class="cat-item" data-cat="统计" onclick="filterCat('统计')"><span>📈</span>统计</div>
-                        <div class="cat-item" data-cat="互动" onclick="filterCat('互动')"><span>🎉</span>互动</div>
-                        
-                        <!-- 🔧 其他 -->
-                        <div class="cat-group-title">🔧 其他</div>
-                        <div class="cat-item" data-cat="系统" onclick="filterCat('系统')"><span>⚙️</span>系统</div>
-                        <div class="cat-item" data-cat="表情" onclick="filterCat('表情')"><span>😊</span>表情</div>
-                        <div class="cat-item" data-cat="计算" onclick="filterCat('计算')"><span>🧮</span>计算</div>
-                        <div class="cat-item" data-cat="其他" onclick="filterCat('其他')"><span>📦</span>其他</div>
+                    <div class="cat-group-title">🎯 核心功能</div>
+                    <div class="cat-item" data-cat="娱乐" onclick="filterCat('娱乐')"><span>🎮</span>娱乐</div>
+                    <div class="cat-item" data-cat="娱乐游戏" onclick="filterCat('娱乐游戏')"><span>🎮</span>娱乐游戏</div>
+                    <div class="cat-item" data-cat="实用" onclick="filterCat('实用')"><span>🛠️</span>实用</div>
+                    <div class="cat-item" data-cat="实用工具" onclick="filterCat('实用工具')"><span>🛠️</span>实用工具</div>
+                    <div class="cat-item" data-cat="社交" onclick="filterCat('社交')"><span>💬</span>社交</div>
+                    <div class="cat-item" data-cat="社交互动" onclick="filterCat('社交互动')"><span>💬</span>社交互动</div>
+                    <div class="cat-item" data-cat="AI" onclick="filterCat('AI')"><span>🤖</span>AI</div>
+                    <div class="cat-item" data-cat="AI增强" onclick="filterCat('AI增强')"><span>🤖</span>AI增强</div>
+                    
+                    <div class="cat-group-title">📺 媒体内容</div>
+                    <div class="cat-item" data-cat="音乐" onclick="filterCat('音乐')"><span>🎵</span>音乐</div>
+                    <div class="cat-item" data-cat="图片" onclick="filterCat('图片')"><span>🖼️</span>图片</div>
+                    <div class="cat-item" data-cat="视频" onclick="filterCat('视频')"><span>📹</span>视频</div>
+                    <div class="cat-item" data-cat="媒体" onclick="filterCat('媒体')"><span>📺</span>媒体</div>
+                    
+                    <div class="cat-group-title">📰 信息资讯</div>
+                    <div class="cat-item" data-cat="新闻" onclick="filterCat('新闻')"><span>📰</span>新闻</div>
+                    <div class="cat-item" data-cat="天气" onclick="filterCat('天气')"><span>🌤️</span>天气</div>
+                    <div class="cat-item" data-cat="天气日历" onclick="filterCat('天气日历')"><span>🌤️</span>天气日历</div>
+                    <div class="cat-item" data-cat="搜索" onclick="filterCat('搜索')"><span>🔍</span>搜索</div>
+                    <div class="cat-item" data-cat="翻译" onclick="filterCat('翻译')"><span>🌐</span>翻译</div>
+                    <div class="cat-item" data-cat="翻译语言" onclick="filterCat('翻译语言')"><span>🌐</span>翻译语言</div>
+                    
+                    <div class="cat-group-title">⚡ 效率 / 🎲 趣味</div>
+                    <div class="cat-item" data-cat="自动化" onclick="filterCat('自动化')"><span>⚡</span>自动化</div>
+                    <div class="cat-item" data-cat="提醒" onclick="filterCat('提醒')"><span>⏰</span>提醒</div>
+                    <div class="cat-item" data-cat="数据" onclick="filterCat('数据')"><span>📊</span>数据</div>
+                    <div class="cat-item" data-cat="开发" onclick="filterCat('开发')"><span>💻</span>开发</div>
+                    <div class="cat-item" data-cat="占卜" onclick="filterCat('占卜')"><span>🔮</span>占卜</div>
+                    <div class="cat-item" data-cat="恶搞" onclick="filterCat('恶搞')"><span>🃏</span>恶搞</div>
+                    <div class="cat-item" data-cat="角色" onclick="filterCat('角色')"><span>🎭</span>角色</div>
+                    <div class="cat-item" data-cat="抽奖" onclick="filterCat('抽奖')"><span>🎰</span>抽奖</div>
+                    
+                    <div class="cat-group-title">🏠 生活 / 👥 群组</div>
+                    <div class="cat-item" data-cat="生活" onclick="filterCat('生活')"><span>🏠</span>生活</div>
+                    <div class="cat-item" data-cat="学习" onclick="filterCat('学习')"><span>📚</span>学习</div>
+                    <div class="cat-item" data-cat="财务" onclick="filterCat('财务')"><span>💰</span>财务</div>
+                    <div class="cat-item" data-cat="健康" onclick="filterCat('健康')"><span>💪</span>健康</div>
+                    <div class="cat-item" data-cat="群管" onclick="filterCat('群管')"><span>👮</span>群管</div>
+                    <div class="cat-item" data-cat="统计" onclick="filterCat('统计')"><span>📈</span>统计</div>
+                    <div class="cat-item" data-cat="互动" onclick="filterCat('互动')"><span>🎉</span>互动</div>
+                    
+                    <div class="cat-group-title">🔧 其他</div>
+                    <div class="cat-item" data-cat="系统" onclick="filterCat('系统')"><span>⚙️</span>系统</div>
+                    <div class="cat-item" data-cat="表情" onclick="filterCat('表情')"><span>😊</span>表情</div>
+                    <div class="cat-item" data-cat="计算" onclick="filterCat('计算')"><span>🧮</span>计算</div>
+                    <div class="cat-item" data-cat="其他" onclick="filterCat('其他')"><span>📦</span>其他</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 右侧内容 - 独立滚动 -->
+        <div class="flex-1 min-w-0 content-area">
+            <!-- 提示条 -->
+            <div class="notice-bar rounded-lg px-4 py-2 mb-4 flex items-center gap-2 text-sm">
+                <span class="text-amber-600">💡</span>
+                <span class="text-amber-800">此页面仅供浏览，如需安装请点击「本地市场」</span>
+            </div>
+            
+            <!-- 搜索框 -->
+            <div class="bg-white rounded-2xl p-4 mb-5 shadow-sm">
+                <div class="relative">
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="✨ 搜索插件名称、描述、功能..." class="search-input">
+                </div>
+            </div>
+
+            <!-- 精选 -->
+            <div id="featuredArea" class="mb-6 hidden">
+                <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">⭐ 精选推荐</h2>
+                <div id="featuredList" class="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4"></div>
+            </div>
+
+            <!-- 所有插件 -->
+            <div>
+                <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                    📦 <span id="catTitle">所有插件</span> 
+                    <span class="text-gray-400 font-normal text-sm" id="countText"></span>
+                </h2>
+                <div id="pluginList" class="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-4xl mb-3">⏳</div>
+                        <p class="text-gray-500">正在加载插件...</p>
                     </div>
                 </div>
             </div>
             
-            <!-- 右侧内容区 -->
-            <div class="flex-1 min-w-0">
-                <!-- 提示条 -->
-                <div class="notice-bar rounded-lg px-4 py-2 mb-4 flex items-center gap-2 text-sm">
-                    <span class="text-amber-600">💡</span>
-                    <span class="text-amber-800">此页面仅供浏览，如需安装请点击「本地市场」</span>
-                </div>
-                
-                <!-- 搜索框 -->
-                <div class="bg-white rounded-2xl p-4 mb-5 shadow-sm">
-                    <div class="relative">
-                        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                        <input type="text" id="searchInput" placeholder="✨ 搜索插件名称、描述、功能..." class="search-input">
-                    </div>
-                </div>
-
-                <!-- 精选 -->
-                <div id="featuredArea" class="mb-6 hidden">
-                    <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">⭐ 精选推荐</h2>
-                    <div id="featuredList" class="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4"></div>
-                </div>
-
-                <!-- 所有插件 -->
-                <div>
-                    <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
-                        📦 <span id="catTitle">所有插件</span> 
-                        <span class="text-gray-400 font-normal text-sm" id="countText"></span>
-                    </h2>
-                    <div id="pluginList" class="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
-                        <div class="col-span-full text-center py-12">
-                            <div class="text-4xl mb-3">⏳</div>
-                            <p class="text-gray-500">正在加载插件...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- 底部留白 -->
+            <div class="h-4"></div>
         </div>
     </div>
 
@@ -296,18 +323,6 @@
             </div>
         </div>
     </div>
-
-    <!-- 底部 -->
-    <footer class="border-t border-purple-100 bg-white/50">
-        <div class="px-6 py-4 flex items-center justify-between text-sm text-gray-500">
-            <span>🏪 白的插件市场</span>
-            <div class="flex items-center gap-4">
-                <a href="https://github.com/VBHC-UHY/whitesalary-plugins" target="_blank" class="hover:text-purple-600">📂 GitHub</a>
-                <a href="https://whitesalary-plugins-web.vercel.app" target="_blank" class="hover:text-purple-600">📤 提交</a>
-                <button onclick="goLocal()" class="hover:text-purple-600">🏠 本地</button>
-            </div>
-        </div>
-    </footer>
 
     <script>
         const GITHUB_RAW = 'https://raw.githubusercontent.com/VBHC-UHY/whitesalary-plugins/main/plugins.json';
