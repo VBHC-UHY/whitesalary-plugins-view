@@ -81,7 +81,7 @@
             border-left: 4px solid #f59e0b;
         }
         
-        /* 精美下拉框 */
+        /* 下拉框 */
         .cat-select {
             padding: 14px 45px 14px 18px;
             border-radius: 16px;
@@ -107,12 +107,32 @@
         .cat-select optgroup {
             font-weight: 600;
             color: #9333ea;
-            background: #faf5ff;
         }
         .cat-select option {
             font-weight: 400;
             color: #4b5563;
-            padding: 8px;
+        }
+        
+        /* 快捷标签 */
+        .quick-tag {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            border: 1px solid #e9d5ff;
+            color: #7c3aed;
+        }
+        .quick-tag:hover {
+            border-color: #a855f7;
+            background: #faf5ff;
+        }
+        .quick-tag.active {
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            color: white;
+            border-color: transparent;
         }
     </style>
 </head>
@@ -174,10 +194,10 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-4 py-8">
-        <!-- 搜索和分类 - 一行搞定 -->
+        <!-- 搜索和分类 -->
         <div class="glass-card rounded-2xl p-5 mb-6">
+            <!-- 第一行：搜索框 + 下拉分类 -->
             <div class="flex flex-col sm:flex-row gap-4">
-                <!-- 搜索框 -->
                 <div class="flex-1 relative">
                     <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -185,10 +205,9 @@
                     <input type="text" id="searchInput" placeholder="✨ 搜索插件名称、描述、功能..." class="search-input">
                 </div>
                 
-                <!-- 分类下拉框 - 包含全部28个分类 -->
+                <!-- 下拉分类（全部28个分类） -->
                 <select id="catSelect" class="cat-select" onchange="filterCat(this.value)">
                     <option value="">🏷️ 全部分类 (28)</option>
-                    
                     <optgroup label="🎯 核心功能">
                         <option value="娱乐">🎮 娱乐</option>
                         <option value="娱乐游戏">🎮 娱乐游戏</option>
@@ -199,14 +218,12 @@
                         <option value="AI">🤖 AI</option>
                         <option value="AI增强">🤖 AI增强</option>
                     </optgroup>
-                    
                     <optgroup label="📺 媒体内容">
                         <option value="音乐">🎵 音乐</option>
                         <option value="图片">🖼️ 图片</option>
                         <option value="视频">📹 视频</option>
                         <option value="媒体">📺 媒体</option>
                     </optgroup>
-                    
                     <optgroup label="📰 信息资讯">
                         <option value="新闻">📰 新闻</option>
                         <option value="天气">🌤️ 天气</option>
@@ -215,34 +232,29 @@
                         <option value="翻译">🌐 翻译</option>
                         <option value="翻译语言">🌐 翻译语言</option>
                     </optgroup>
-                    
                     <optgroup label="⚡ 效率提升">
                         <option value="自动化">⚡ 自动化</option>
                         <option value="提醒">⏰ 提醒</option>
                         <option value="数据">📊 数据</option>
                         <option value="开发">💻 开发</option>
                     </optgroup>
-                    
                     <optgroup label="🎲 趣味休闲">
                         <option value="占卜">🔮 占卜</option>
                         <option value="恶搞">🃏 恶搞</option>
                         <option value="角色">🎭 角色</option>
                         <option value="抽奖">🎰 抽奖</option>
                     </optgroup>
-                    
                     <optgroup label="🏠 生活服务">
                         <option value="生活">🏠 生活</option>
                         <option value="学习">📚 学习</option>
                         <option value="财务">💰 财务</option>
                         <option value="健康">💪 健康</option>
                     </optgroup>
-                    
                     <optgroup label="👥 群组管理">
                         <option value="群管">👮 群管</option>
                         <option value="统计">📈 统计</option>
                         <option value="互动">🎉 互动</option>
                     </optgroup>
-                    
                     <optgroup label="🔧 其他">
                         <option value="系统">⚙️ 系统</option>
                         <option value="表情">😊 表情</option>
@@ -250,6 +262,11 @@
                         <option value="其他">📦 其他</option>
                     </optgroup>
                 </select>
+            </div>
+            
+            <!-- 第二行：快捷分类标签（有插件的分类） -->
+            <div class="flex flex-wrap gap-2 mt-4" id="quickTags">
+                <button class="quick-tag active" data-cat="" onclick="quickFilter('')">📋 全部</button>
             </div>
         </div>
 
@@ -323,6 +340,21 @@
         
         function filterCat(cat) {
             currentCat = cat;
+            // 同步快捷标签状态
+            document.querySelectorAll('.quick-tag').forEach(tag => {
+                tag.classList.toggle('active', tag.dataset.cat === cat);
+            });
+            render();
+        }
+        
+        function quickFilter(cat) {
+            currentCat = cat;
+            // 同步下拉框
+            document.getElementById('catSelect').value = cat;
+            // 同步快捷标签状态
+            document.querySelectorAll('.quick-tag').forEach(tag => {
+                tag.classList.toggle('active', tag.dataset.cat === cat);
+            });
             render();
         }
         
@@ -335,6 +367,18 @@
                 
                 document.getElementById('stat-total').textContent = plugins.length;
                 document.getElementById('stat-featured').textContent = plugins.filter(p => p.featured).length;
+                
+                // 生成快捷标签（只显示有插件的分类）
+                const usedCats = [...new Set(plugins.map(p => p.category).filter(Boolean))];
+                const quickTags = document.getElementById('quickTags');
+                usedCats.forEach(cat => {
+                    const btn = document.createElement('button');
+                    btn.className = 'quick-tag';
+                    btn.dataset.cat = cat;
+                    btn.onclick = () => quickFilter(cat);
+                    btn.textContent = (icons[cat] || '📦') + ' ' + cat;
+                    quickTags.appendChild(btn);
+                });
                 
                 render();
                 renderFeatured();
