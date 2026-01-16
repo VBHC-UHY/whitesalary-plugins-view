@@ -71,13 +71,26 @@
                 
                 <!-- 统计数据 -->
                 <div class="flex items-center gap-4">
-                    <div class="stat-card rounded-2xl px-6 py-4 text-center">
-                        <div class="text-3xl font-bold" id="plugin-count">-</div>
-                        <div class="text-sm text-white/70">可用插件</div>
+                    <div class="stat-card rounded-2xl px-5 py-4 flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-3xl">📦</div>
+                        <div>
+                            <div class="text-2xl font-bold" id="plugin-count">-</div>
+                            <div class="text-sm text-white/70">可用插件</div>
+                        </div>
                     </div>
-                    <div class="stat-card rounded-2xl px-6 py-4 text-center">
-                        <div class="text-3xl font-bold" id="featured-count">-</div>
-                        <div class="text-sm text-white/70">精选推荐</div>
+                    <div class="stat-card rounded-2xl px-5 py-4 flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-3xl">⭐</div>
+                        <div>
+                            <div class="text-2xl font-bold" id="featured-count">-</div>
+                            <div class="text-sm text-white/70">精选推荐</div>
+                        </div>
+                    </div>
+                    <div class="stat-card rounded-2xl px-5 py-4 flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-3xl">🏷️</div>
+                        <div>
+                            <div class="text-2xl font-bold" id="category-count">-</div>
+                            <div class="text-sm text-white/70">插件分类</div>
+                        </div>
                     </div>
                 </div>
                 
@@ -212,6 +225,9 @@
                 
                 // 分类
                 const categories = [...new Set(allPlugins.map(p => p.category))];
+                document.getElementById('category-count').textContent = categories.length;
+                
+                // 填充分类选择器
                 const categorySelect = document.getElementById('category-filter');
                 const categoryPills = document.getElementById('category-pills');
                 
