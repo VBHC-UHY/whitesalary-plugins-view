@@ -197,8 +197,8 @@
     </footer>
 
     <script>
-        // 使用 GitHub API 替代 Raw，实现实时更新（Raw 有 5 分钟缓存）
-        const GITHUB_API_URL = 'https://api.github.com/repos/VBHC-UHY/whitesalary-plugins/contents/plugins.json';
+        // 使用自己的 API 代理（服务端带 Token 认证，5000次/小时）
+        const PLUGINS_API_URL = '/api/plugins';
         const GITHUB_REPO_URL = 'https://github.com/VBHC-UHY/whitesalary-plugins/tree/main/plugins/';
         const LOCAL_WEBUI_URL = 'http://127.0.0.1:5266';
         
@@ -215,17 +215,12 @@
         
         async function init() {
             try {
-                // 使用 GitHub API 获取实时数据
-                const response = await fetch(GITHUB_API_URL, {
-                    headers: { 'Accept': 'application/vnd.github.v3+json' }
-                });
+                // 通过 API 代理获取数据（服务端认证，实时更新）
+                const response = await fetch(PLUGINS_API_URL);
                 if (!response.ok) throw new Error('HTTP ' + response.status);
-                const fileInfo = await response.json();
-                // 解码 base64 内容
-                const content = atob(fileInfo.content.replace(/\n/g, ''));
-                const data = JSON.parse(new TextDecoder().decode(
-                    Uint8Array.from(content, c => c.charCodeAt(0))
-                ));
+                const result = await response.json();
+                if (!result.success) throw new Error(result.error || '获取失败');
+                const data = { plugins: result.plugins };
                 allPlugins = data.plugins || [];
                 
                 document.getElementById('plugin-count').textContent = allPlugins.length;
