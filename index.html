@@ -422,6 +422,83 @@
             '生活服务': '🏠', '学习教育': '📚', '财务金融': '💰', '健康运动': '💪',
             '群管理': '👮', '数据统计': '📈', '群互动': '🎉', '系统管理': '⚙️', '其他': '📦'
         };
+
+        const DEFAULT_ROLES = ['interceptor', 'rewriter', 'tool_provider'];
+        const DEFAULT_PLATFORMS = ['all'];
+        const ROLE_LABELS = {
+            interceptor: '抢答',
+            rewriter: '改写',
+            tool_provider: '工具',
+            observer: '观察'
+        };
+
+        function asList(value) {
+            if (value === undefined || value === null || value === '') return [];
+            if (Array.isArray(value)) return value;
+            if (typeof value === 'string') {
+                return value.replace(/，/g, ',').split(/[\n,]/).map(v => v.trim()).filter(Boolean);
+            }
+            return [value];
+        }
+
+        function normalizeDependencies(value) {
+            if (!value) return {};
+            if (typeof value === 'object' && !Array.isArray(value)) return value;
+            const python = asList(value);
+            return python.length ? { python } : {};
+        }
+
+        function normalizePlugin(plugin) {
+            const roles = asList(plugin.roles);
+            const platforms = asList(plugin.platforms);
+            return {
+                schema_version: 2,
+                roles: roles.length ? roles : DEFAULT_ROLES,
+                platforms: platforms.length ? platforms : DEFAULT_PLATFORMS,
+                permissions: asList(plugin.permissions),
+                requires_service: asList(plugin.requires_service || plugin.requires_services),
+                assets: asList(plugin.assets),
+                dependencies: normalizeDependencies(plugin.dependencies),
+                ...plugin,
+                roles: roles.length ? roles : DEFAULT_ROLES,
+                platforms: platforms.length ? platforms : DEFAULT_PLATFORMS,
+                permissions: asList(plugin.permissions),
+                requires_service: asList(plugin.requires_service || plugin.requires_services),
+                assets: asList(plugin.assets),
+                dependencies: normalizeDependencies(plugin.dependencies)
+            };
+        }
+
+        function normalizePlugins(rawPlugins) {
+            return (rawPlugins || []).filter(Boolean).map(normalizePlugin);
+        }
+
+        function roleLabel(role) {
+            return ROLE_LABELS[role] || role;
+        }
+
+        function badgeClass(color) {
+            return {
+                purple: 'bg-purple-50 text-purple-600',
+                blue: 'bg-blue-50 text-blue-600',
+                amber: 'bg-amber-50 text-amber-600',
+                rose: 'bg-rose-50 text-rose-600',
+                gray: 'bg-gray-100 text-gray-600'
+            }[color] || 'bg-gray-100 text-gray-600';
+        }
+
+        function renderBadges(items, color = 'purple') {
+            const cls = badgeClass(color);
+            return asList(items).map(item =>
+                `<span class="px-2 py-0.5 rounded-full ${cls} text-xs">${item}</span>`
+            ).join('');
+        }
+
+        function renderDependencyBadges(dependencies) {
+            const deps = normalizeDependencies(dependencies);
+            const python = asList(deps.python);
+            return python.length ? renderBadges(python, 'gray') : '';
+        }
         
         // ========== 已查看版本管理 ==========
         function loadViewedVersions() {
@@ -828,7 +905,7 @@
                     if (apiRes.ok) {
                         data = await apiRes.json();
                         if (data.success) {
-                            plugins = data.plugins || [];
+                            plugins = normalizePlugins(data.plugins || []);
                         } else {
                             throw new Error('API返回失败');
                         }
@@ -840,7 +917,7 @@
                     const rawRes = await fetch(GITHUB_RAW + '?t=' + Date.now());
                     if (!rawRes.ok) throw new Error('HTTP ' + rawRes.status);
                     data = await rawRes.json();
-                    plugins = data.plugins || [];
+                    plugins = normalizePlugins(data.plugins || []);
                 }
                 
                 // 统计
@@ -881,7 +958,11 @@
                     (p.cn_name || '').toLowerCase().includes(search) ||
                     (p.name || '').toLowerCase().includes(search) ||
                     (p.description || '').toLowerCase().includes(search) ||
-                    (p.author || '').toLowerCase().includes(search)
+                    (p.author || '').toLowerCase().includes(search) ||
+                    asList(p.roles).join(' ').toLowerCase().includes(search) ||
+                    asList(p.platforms).join(' ').toLowerCase().includes(search) ||
+                    asList(p.permissions).join(' ').toLowerCase().includes(search) ||
+                    asList(p.requires_service).join(' ').toLowerCase().includes(search)
                 );
             }
             
@@ -946,6 +1027,10 @@
                     </div>
                 </div>
                 <p class="text-gray-600 text-xs mb-2 line-clamp-2">${p.description}</p>
+                <div class="flex flex-wrap gap-1 mb-2">
+                    ${renderBadges(asList(p.roles).map(roleLabel), 'blue')}
+                    ${asList(p.platforms).includes('all') ? '' : renderBadges(p.platforms, 'gray')}
+                </div>
                 <div class="flex items-center justify-between">
                     <span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 text-xs">${p.category}</span>
                     <div class="flex items-center gap-2 text-xs text-gray-400">
@@ -1016,6 +1101,26 @@
                     </div>
                 </div>`;
             
+            const roleBadges = renderBadges(asList(currentPlugin.roles).map(roleLabel), 'blue');
+            const platformBadges = renderBadges(currentPlugin.platforms, 'gray');
+            const permissionBadges = renderBadges(currentPlugin.permissions, 'rose');
+            const serviceBadges = renderBadges(currentPlugin.requires_service, 'amber');
+            const dependencyBadges = renderDependencyBadges(currentPlugin.dependencies);
+            const assetBadges = renderBadges(currentPlugin.assets, 'gray');
+
+            if (roleBadges || platformBadges || permissionBadges || serviceBadges || dependencyBadges || assetBadges) {
+                bodyHtml += `
+                    <div class="bg-white border border-gray-100 p-4 rounded-xl space-y-3">
+                        <h3 class="font-bold text-gray-700 text-sm">插件元信息</h3>
+                        ${roleBadges ? `<div><span class="text-xs text-gray-400 mr-2">角色</span><div class="inline-flex flex-wrap gap-1">${roleBadges}</div></div>` : ''}
+                        ${platformBadges ? `<div><span class="text-xs text-gray-400 mr-2">平台</span><div class="inline-flex flex-wrap gap-1">${platformBadges}</div></div>` : ''}
+                        ${permissionBadges ? `<div><span class="text-xs text-gray-400 mr-2">权限</span><div class="inline-flex flex-wrap gap-1">${permissionBadges}</div></div>` : ''}
+                        ${serviceBadges ? `<div><span class="text-xs text-gray-400 mr-2">服务</span><div class="inline-flex flex-wrap gap-1">${serviceBadges}</div></div>` : ''}
+                        ${dependencyBadges ? `<div><span class="text-xs text-gray-400 mr-2">Python依赖</span><div class="inline-flex flex-wrap gap-1">${dependencyBadges}</div></div>` : ''}
+                        ${assetBadges ? `<div><span class="text-xs text-gray-400 mr-2">资源</span><div class="inline-flex flex-wrap gap-1">${assetBadges}</div></div>` : ''}
+                    </div>`;
+            }
+
             // 截图
             if (currentPlugin.screenshots?.length > 0) {
                 bodyHtml += `
